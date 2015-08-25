@@ -1,6 +1,6 @@
-module Input
+module entrada
 contains
-    subroutine leSistema(n, A, b)
+    subroutine le_sistema(n, A, b)
         integer, intent(out) :: n
         real*8, allocatable, intent(out) :: b(:)
         real*8, allocatable, intent(out) :: A(:, :)
@@ -24,5 +24,5 @@ contains
 
         ! Já podemos fechar o arquivo de entrada
         close(1)
-    end subroutine leSistema
-end module Input
+    end subroutine le_sistema
+end module entrada

@@ -1,7 +1,7 @@
 NAME = EP1
 PROGRAM = $(NAME).f95
 OUTPUT = $(NAME).out
-MODULES = cholesky.f95 input.f95 
+MODULES = cholesky.f95 entrada.f95 
 
 .PHONY: all clean
 
