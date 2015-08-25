@@ -2,8 +2,8 @@ module entrada
 contains
     subroutine le_sistema(n, A, b)
         integer, intent(out) :: n
-        real*8, allocatable, intent(out) :: b(:)
-        real*8, allocatable, intent(out) :: A(:, :)
+        real, allocatable, intent(out) :: b(:)
+        real, allocatable, intent(out) :: A(:, :)
 
         open(1, file = 'sistema', status = 'old')
 
