@@ -3,8 +3,7 @@ use entrada
 use cholesky
 implicit none
     integer :: n, i, j, k
-    real,  allocatable :: A(:, :), b(:)
-
+    real, allocatable :: A(:, :), b(:)
 
     call le_sistema(n, A, b)
     k = cholcol(n, A)
