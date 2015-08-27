@@ -9,7 +9,8 @@ contains
   ! com
   !    A ∈ ℝⁿˣⁿ, triangular inferior
   !    b ∈ ℝⁿ
-  ! gravando a solução (x ∈ ℝⁿ) sobre o vetor b.
+  ! com orientação a colunas, gravando 
+  ! a solução (x ∈ ℝⁿ) sobre o vetor b.
   ! Retorna
   !     0: caso tenha resolvido o sistema com sucesso
   !    -1: caso a matriz A seja singular e sistema
@@ -40,7 +41,61 @@ contains
     status = 0
   end function forwcol
 
+
+  ! Resolve um sistema linear
+  !    Ax = b
+  ! com
+  !    A ∈ ℝⁿˣⁿ, triangular superior
+  !    b ∈ ℝⁿ
+  ! com orientação a colunas, gravando 
+  ! a solução (x ∈ ℝⁿ) sobre o vetor b.
+  !   Além disso, pode receber no lugar de A,
+  ! sua transposta, fato indicado pela variável
+  ! trans.
+  ! Retorna
+  !     0: caso tenha resolvido o sistema com sucesso
+  !    -1: caso a matriz A seja singular e sistema
+  !        não possa ser resolvido
   function backcol(n, A, b, trans) result(status)
-    
+    integer, intent(in) :: n
+    real, intent(inout) :: A(:, :), b(:)
+    logical, intent(in) :: trans
+    integer :: i, j, status
+    real :: ajj, bj
+
+    status = -1
+    if (trans) then
+       do j = n, 1, -1
+          ajj = A(j, j)
+          if (ajj == 0) then
+             return
+          end if
+          
+          do i = j+1, n
+             b(j) = b(j) - b(i)*A(i, j)
+          end do
+
+          b(j) = b(j)/ajj
+       end do
+       status = 0
+       return
+    else
+       do j = n, 1, -1
+          ajj = A(j, j)
+          if (ajj == 0) then
+             return
+          end if
+
+          b(j) = b(j)/ajj
+          bj = b(j)
+
+          do i = 1, j-1
+             b(i) = b(i) - bj*A(i, j)
+          end do
+       end do
+
+       status = 0
+       return
+    end if
   end function backcol
 end module trisys
