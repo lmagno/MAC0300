@@ -1,4 +1,5 @@
 program EP1
+use matriz
 use entrada
 use cholesky
 use trisys
@@ -7,12 +8,12 @@ implicit none
     real, allocatable :: A(:, :), b(:)
 
     call le_sistema(n, A, b)    
-    print *, b
+    print *, "b"
+
     s = cholcol(n, A)
-    print *, s
-    
-    s = forwrow(n, A, b)
-    print *, b
+    s = backrow(n, A, b, .true.)
+    print *, "b"
+    call pvec(b)
 
     ! Desaloca a matriz A e o vetor b
     deallocate(b)
