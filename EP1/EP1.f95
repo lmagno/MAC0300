@@ -10,8 +10,8 @@ implicit none
     call le_sistema(n, A, b)    
     print *, "b"
 
-    s = cholcol(n, A)
-    s = backrow(n, A, b, .true.)
+    s = cholrow(n, A)
+    s = forwcol(n, A, b)
     print *, "b"
     call pvec(b)
 
