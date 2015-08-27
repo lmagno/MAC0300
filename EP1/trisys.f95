@@ -41,6 +41,42 @@ contains
     status = 0
   end function forwcol
 
+  ! Resolve um sistema linear
+  !    Ax = b
+  ! com
+  !    A ∈ ℝⁿˣⁿ, triangular inferior
+  !    b ∈ ℝⁿ
+  ! com orientação a linhas, gravando 
+  ! a solução (x ∈ ℝⁿ) sobre o vetor b.
+  ! Retorna
+  !     0: caso tenha resolvido o sistema com sucesso
+  !    -1: caso a matriz A seja singular e sistema
+  !        não possa ser resolvido
+  ! 
+  function forwrow(n, A, b) result(status)
+    integer, intent(in) :: n
+    real, intent(inout) :: A(:, :), b(:)
+    integer :: i, j, status
+    real :: aii
+
+    status = -1
+
+    do i = 1, n
+       aii = A(i, i)
+       if (aii == 0) then
+          return
+       end if
+
+       do j = 1, i-1
+          b(i) = b(i) - b(j)*A(i, j)
+       end do
+
+       b(i) = b(i)/aii
+    end do
+
+    status = 0
+  end function forwrow
+
 
   ! Resolve um sistema linear
   !    Ax = b

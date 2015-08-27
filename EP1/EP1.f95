@@ -11,7 +11,7 @@ implicit none
     s = cholcol(n, A)
     print *, s
     
-    s = backcol(n, A, b, .true.)
+    s = forwrow(n, A, b)
     print *, b
 
     ! Desaloca a matriz A e o vetor b
