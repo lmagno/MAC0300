@@ -1,11 +1,12 @@
 module entrada
 contains
-    subroutine le_sistema(n, A, b)
+    subroutine le_sistema(n, A, b, filename)
         integer, intent(out) :: n
         real, allocatable, intent(out) :: b(:)
         real, allocatable, intent(out) :: A(:, :)
+        character(len=*), intent(in) :: filename
 
-        open(1, file = 'sistema', status = 'old')
+        open(1, file = filename, status = 'old')
 
         ! Lê o tamanho n do sistema e aloca a memória necessária
         read(1, *) n

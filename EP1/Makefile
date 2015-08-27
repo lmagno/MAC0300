@@ -11,8 +11,7 @@ FFLAGS = -Wall -fdefault-real-8 # Usar double como default
 .PHONY: all clean
 
 $(OUTPUT): $(MODFILES) $(SOURCE)
-	f95 $(FFLAGS) $(MODFILES) $(SOURCE) -o $(OUTPUT) && ./$(OUTPUT)
+	f95 $(FFLAGS) $(MODFILES) $(SOURCE) -o $(OUTPUT)
 
 clean:
-	echo $(MODFILES)
-	rm $(OUTPUT)
+	rm -f $(OUTPUT) *.mod
