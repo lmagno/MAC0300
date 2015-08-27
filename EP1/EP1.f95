@@ -1,8 +1,8 @@
 program EP1
-use matriz
-use entrada
-use cholesky
-use trisys
+use matriz,   only: pvec
+use entrada,  only: le_sistema
+use cholesky, only: cholcol, cholrow
+use trisys,   only: forwcol, forwrow, backcol, backrow
 implicit none
     integer :: n, s
     real, allocatable :: A(:, :), b(:)
