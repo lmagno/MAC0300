@@ -1,50 +1,55 @@
 program EP1
-use matriz,   only: pvec
-use entrada,  only: le_sistema
-use cholesky, only: cholcol, cholrow
-use trisys,   only: forwcol, forwrow, backcol, backrow
+use matriz, only: pvec
+use sol,    only: results, solcol 
 implicit none
-    integer :: n, i, s
-    real, allocatable, dimension(:, :) :: A
-    real, allocatable, dimension(:)    :: b, x
+    integer :: i, status, argc
+    type (results) :: res
     character(len=72) :: filename
-    real :: start, finish
+    character(len=72) :: filenames(9)
 
-    ! Lê qual arquivo de entrada deve ser utilizado
-    ! através de um argumento de linha de comando
-    ! e carrega o sistema descrito nele
-    call get_command_argument(1, filename)
-    call le_sistema(n, A, b, filename)    
-
+    ! Arquivos de entrada padrões
+    filenames = ['Dados/a1.dat', &
+                 'Dados/a2.dat', &
+                 'Dados/a3.dat', &
+                 'Dados/a4.dat', &
+                 'Dados/a5.dat', &
+                 'Dados/a6.dat', &
+                 'Dados/a7.dat', &
+                 'Dados/a8.dat', &
+                 'Dados/a9.dat']
+ 
     
-    ! Calcula a solução esperada do sistema 
-    allocate(x(n))
-    x = [(1 + mod(i-1, n/100), i = 1, n)]
-
-    call cpu_time(start)
-    s = cholcol(n, A)
-    call cpu_time(finish)
-    print '("cholcol: ", es10.3)', finish-start
-    ! Agora temos o sistema
-    ! GGᵀx = b
-
-    ! Gy = b
-    call cpu_time(start)
-    s = forwcol(n, A, b)
-    call cpu_time(finish)
-    print '("forwcol: ", es10.3)', finish-start
-
-    ! Gᵀx = y
-    call cpu_time(start)
-    s = backcol(n, A, b, .true.)
-    call cpu_time(finish)
-    print '("backcol: ", es10.3)', finish-start
-    x = x-b
+    print'(A20, 4A10)', "Nome do arquivo     ", "Cholesky", "Forward", "Backward", "Erro"
     
-    print '("O erro foi: ", es10.2)', sqrt(dot_product(x, x))
-  
-    ! Desaloca a matriz A e o vetor b
-    deallocate(x)
-    deallocate(b)
-    deallocate(A)
+
+    argc = IARGC()
+    if (argc == 0) then
+        ! Resolve os sistemas padrões
+        do i = 1, 9
+            print '(A20, $)', filenames(i)
+            status = solcol(filenames(i), res)
+
+            if (status == 0) then
+                print '(3f10.5, es10.2, $)', res%tchol, res%tforw, res%tback, res%erro
+            else
+                print *, "A matriz não é definida positiva!"
+                CYCLE
+            end if
+
+            print *, "vuash!"
+        end do
+
+    else
+        ! Resolve os sistemas fornecidos pelo usuário
+        do i = 1, argc
+            call get_command_argument(i, filename)
+            status = solcol(filename, res)
+
+            if (status == 0) then
+               print '(A20, 3f10.5, es10.2)', filename, res%tchol, res%tforw, res%tback, res%erro
+            else
+               print '(A20, A)', filename, "A matriz não é definida positiva!"
+            end if
+        end do
+    end if
 end program EP1
