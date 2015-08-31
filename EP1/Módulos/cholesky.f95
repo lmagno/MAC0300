@@ -39,7 +39,7 @@ contains
     status = 0
   end function cholcol
 
-  ! Calcula o fator de Cholesky pelo método do produto interno,
+  ! Calcula o fator de Cholesky pelo método do produto externo,
   ! orientado a linhas.
   ! Guarda o fator na parte triangular inferior da matriz A e
   ! retorna:
@@ -49,30 +49,28 @@ contains
   function cholrow(n, A) result(status)
     integer, intent(in) :: n
     real, intent(inout) :: A(:, :)
-    integer :: i, j, k
+    real :: akk
     integer :: status
-    real :: ajj
+    integer :: i, j, k
 
     status = -1
-    do j = 1, n
-       ajj = A(j, j)
-       do k = 1, j-1
-          ajj = ajj - A(j, k)*A(j, k)
-       end do
-       
-       if (ajj <= 0) then
+    do k = 1, n
+       akk = A(k, k)
+       if (akk <= 0) then
           return
        end if
 
-       ajj = sqrt(ajj)
-       A(j, j) = ajj
-
-       do i = j+1, n
-          do k = 1, j-1
+       akk = sqrt(akk)
+       A(k, k) = akk 
+       do i = k+1, n
+          A(i, k) = A(i, k)/akk
+       end do
+       
+       do i = k+1, n
+          do j = k+1, n
              A(i, j) = A(i, j) - A(i, k)*A(j, k)
           end do
-          A(i, j) = A(i, j)/ajj
-       end do
+       end do       
     end do
 
     status = 0

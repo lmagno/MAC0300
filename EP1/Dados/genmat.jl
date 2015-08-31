@@ -35,11 +35,11 @@ function main()
     open("sistema", "w") do f
         write(f, "$(n)\n")
         for j = 1:n, i = 1:n
-            write(f, @sprintf "%d %d %e\n" i-1 j-1 A[i, j])
+  	    @inbounds write(f, @sprintf "%d %d %e\n" i-1 j-1 A[i, j])
         end
 
         for i = 1:n
-            write(f, @sprintf "%d %.6e\n" i-1 b[i])
+            @inbounds write(f, @sprintf "%d %.6e\n" i-1 b[i])
         end
     end
     ok()
@@ -49,7 +49,7 @@ function main()
         write(f, "Fator de Cholesky:\n")
         for i = 1:n
             for j = 1:n
-                write(f, @sprintf "%.4f " G[i, j])
+                @inbounds write(f, @sprintf "%.4f " G[i, j])
             end
             write(f, @sprintf "\n")
         end
