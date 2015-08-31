@@ -7,6 +7,9 @@ implicit none
     character(len=72), allocatable :: filenames(:)
 
     n = IARGC()
+    
+    ! Usa arquivos padrões caso nenhum seja passado
+    ! como argumento
     if (n == 0) then
        n = 9
        allocate(filenames(n))
@@ -22,21 +25,24 @@ implicit none
                     'Dados/a8.dat', &
                     'Dados/a9.dat']
     else
+       ! Arquivos passados como argumentos
        allocate(filenames(n))
        do i = 1, n
           call get_command_argument(i, filenames(i))
        end do
     end if
 
-    print '(A30, A45)', "Colunas", "Linhas"
-    print '(A20, $)', "Nome do arquivo     "
-    print '(4A10, $)', "Cholesky", "Forward", "Backward", "Erro"
+    print  '(A30, A45)', "Colunas", "Linhas"
+    print    '(A20, $)', "Nome do arquivo     "
+    print   '(4A10, $)', "Cholesky", "Forward", "Backward", "Erro"
     print '(A15, 3A10)', "Cholesky", "Forward", "Backward", "Erro"
 
 
     ! Resolve os sistemas
     do i = 1, n
         print '(A20, $)', filenames(i)
+        
+        ! Resolve com orientação a colunas
         status = solcol(filenames(i), res)
 
         if (status == 0) then
@@ -46,6 +52,7 @@ implicit none
             CYCLE
         end if
 
+        ! Resolve com orientação a linhas
         status = solrow(filenames(i), res)
 
         if (status == 0) then
@@ -53,7 +60,6 @@ implicit none
         else
             print *, "A matriz não é definida positiva!"
         end if
-
     end do
 
 
