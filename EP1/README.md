@@ -32,7 +32,7 @@ onde **xᵥ** é a solução real do sistema e **x** é a calculada.
 
 ### Exemplo de saída
 
-Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obtém-se a saída*
+Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obtém-se a saída\*
 
 <table>
   <tr>
@@ -130,5 +130,19 @@ Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obt
     <td colspan="7">A matriz não é definida positiva!</td>
   </tr>
 </table>
-*_Os erros não estão sendo exibidos por questão de espaço._
+\*_Os erros não estão sendo exibidos por questão de espaço._
+
 ### Modo de uso
+Para compilar o programa, basta executar
+```
+make
+```
+nesta pasta, o que criará o executável `EP1.out` (a compilação depende do executável `f95`).
+
+Se chamado na forma
+```
+EP1.out filename1 filenam2 filename3 [...]
+```
+o programa usa cada arquivo como uma entrada diferente e resolve os respectivos sistemas.
+
+Caso chamado sem argumentos, o programa utiliza os arquivos do exemplo acima como entrada.
