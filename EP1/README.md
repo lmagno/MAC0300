@@ -49,7 +49,7 @@ Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obt
     <td></td>
     <td>Cholesky</td>
     <td>Forward</td>
-    <td>Backward</td>
+    <td>Back</td>
   </tr>
   <tr>
     <td>Dados/a1.dat</td>

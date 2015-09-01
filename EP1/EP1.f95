@@ -1,19 +1,19 @@
 program EP1
 use matriz, only: pvec
-use sol,    only: results, solcol, solrow 
+use sol,    only: results, solcol, solrow
 implicit none
     integer :: i, n, status
     type (results) :: res
     character(len=72), allocatable :: filenames(:)
 
     n = IARGC()
-    
+
     ! Usa arquivos padrões caso nenhum seja passado
     ! como argumento
     if (n == 0) then
        n = 9
        allocate(filenames(n))
-       
+
        ! Arquivos de entrada padrões
        filenames = ['Dados/a1.dat', &
                     'Dados/a2.dat', &
@@ -34,14 +34,14 @@ implicit none
 
     print  '(A30, A45)', "Colunas", "Linhas"
     print    '(A20, $)', "Nome do arquivo     "
-    print   '(4A10, $)', "Cholesky", "Forward", "Backward", "Erro"
-    print '(A15, 3A10)', "Cholesky", "Forward", "Backward", "Erro"
+    print   '(4A10, $)', "Cholesky", "Forward", "Back", "Erro"
+    print '(A15, 3A10)', "Cholesky", "Forward", "Back", "Erro"
 
 
     ! Resolve os sistemas
     do i = 1, n
         print '(A20, $)', filenames(i)
-        
+
         ! Resolve com orientação a colunas
         status = solcol(filenames(i), res)
 
