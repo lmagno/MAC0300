@@ -32,7 +32,7 @@ onde **xᵥ** é a solução real do sistema e **x** é a calculada.
 
 ### Exemplo de saída
 
-Usando os arquivos de entrada padrões num Intel(R) Atom(TM) CPU D2500 @ 1.86GHz, obtém-se a saída\*
+Usando os arquivos de entrada padrões num Intel(R) Atom(TM) CPU D2500 @ 1.86GHz, obtém-se a saída
 
 ```
 Colunas                                       Linhas 
@@ -47,8 +47,6 @@ Dados/a7.dat          10.82939   0.01379   0.01658  3.40E-09       13.22789   0.
 Dados/a8.dat         A matriz não é definida positiva!
 Dados/a9.dat         A matriz não é definida positiva!
 ```
-
-\*_Os erros não estão sendo exibidos por questão de espaço._
 
 ### Modo de uso
 Para compilar o programa, basta executar
