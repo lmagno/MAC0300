@@ -32,104 +32,21 @@ onde **xᵥ** é a solução real do sistema e **x** é a calculada.
 
 ### Exemplo de saída
 
-Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obtém-se a saída\*
+Usando os arquivos de entrada padrões num Intel(R) Atom(TM) CPU D2500 @ 1.86GHz, obtém-se a saída\*
 
-<table>
-  <tr>
-    <th></th>
-    <th colspan="3">Colunas</th>
-    <th></th>
-    <th colspan="3">Linhas</th>
-  </tr>
-  <tr>
-    <td>Nome do arquivo</td>
-    <td>Cholesky</td>
-    <td>Forward</td>
-    <td>Back</td>
-    <td></td>
-    <td>Cholesky</td>
-    <td>Forward</td>
-    <td>Back</td>
-  </tr>
-  <tr>
-    <td>Dados/a1.dat</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.00400</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a2.dat</td>
-    <td>0.01200</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.01200</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a3.dat</td>
-    <td>0.03600</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.04400</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a4.dat</td>
-    <td>0.08400</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.10000</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a5.dat</td>
-    <td>0.16400</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.19600</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a6.dat</td>
-    <td>0.28400</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.33200</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-  </tr>
-  <tr>
-    <td>Dados/a7.dat</td>
-    <td>0.44800</td>
-    <td>0.00000</td>
-    <td>0.00000</td>
-    <td></td>
-    <td>0.56000</td>
-    <td>0.00000</td>
-    <td>0.00400</td>
-  </tr>
-  <tr>
-    <td>Dados/a8.dat</td>
-    <td colspan="7">A matriz não é definida positiva!</td>
-  </tr>
-  <tr>
-    <td>Dados/a9.dat</td>
-    <td colspan="7">A matriz não é definida positiva!</td>
-  </tr>
-</table>
+```                       Colunas                                       Linhas 
+Nome do arquivo       Cholesky   Forward  Backward      Erro       Cholesky   Forward  Backward      Erro
+Dados/a1.dat           0.03178   0.00027   0.00032  3.17E-11        0.03195   0.00035   0.00028  3.17E-11
+Dados/a2.dat           0.25150   0.00111   0.00140  1.25E-10        0.25891   0.00152   0.00118  1.25E-10
+Dados/a3.dat           0.85829   0.00260   0.00297  2.12E-07        0.95939   0.00353   0.00316  2.12E-07
+Dados/a4.dat           2.03287   0.00469   0.00543  8.25E-10        2.39481   0.00678   0.00638  8.25E-10
+Dados/a5.dat           3.96805   0.00707   0.00859  2.16E-08        4.75033   0.01091   0.01015  2.16E-08
+Dados/a6.dat           6.82770   0.01028   0.01239  4.43E-08        8.31521   0.01581   0.01502  4.43E-08
+Dados/a7.dat          10.82939   0.01379   0.01658  3.40E-09       13.22789   0.02212   0.02074  3.40E-09
+Dados/a8.dat         A matriz não é definida positiva!
+Dados/a9.dat         A matriz não é definida positiva!
+```
+
 \*_Os erros não estão sendo exibidos por questão de espaço._
 
 ### Modo de uso
