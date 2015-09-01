@@ -70,7 +70,7 @@ contains
     ! Calcula a norma do vetor diferença
     ! entre a solução esperada e a obtida,
     ! como forma de estimativa do erro
-    res%erro = norm2(x - b)/n
+    res%erro = norm2(x - b)/sqrt(real(n))
 
 
     ! Libera a memória
@@ -138,7 +138,7 @@ contains
     ! Calcula a norma do vetor diferença
     ! entre a solução esperada e a obtida,
     ! como forma de estimativa do erro
-    res%erro = norm2(x - b)/n
+    res%erro = norm2(x - b)/sqrt(real(n))
 
 
     ! Libera a memória

@@ -26,9 +26,9 @@ _Nota: o fator de Cholesky **G** é gravado sobre a parte triangular inferior de
 
 Esse processo é executado uma vez com orientação a colunas e uma vez com orientação a linhas, imprimindo os tempos de execução em segundos de cada passo, bem como o erro, definido como:
 
-> Erro = ‖**xᵥ**-**x**‖/n
+> Erro = ‖**xᵥ**-**x**‖/√n
 
-onde **xᵥ** é a solução real do sistema e **x** é a calculada.
+onde **xᵥ** é a solução real do sistema, **x** é a solução calculada, n é o tamanho do vetor e ‖.‖ a norma euclidiana.
 
 ### Exemplo de saída
 
@@ -37,13 +37,13 @@ Usando os arquivos de entrada padrões num Intel(R) Atom(TM) CPU D2500 @ 1.86GHz
 ```
                        Colunas                                       Linhas
 Nome do arquivo       Cholesky   Forward      Back      Erro       Cholesky   Forward      Back      Erro
-Dados/a1.dat           0.03166   0.00043   0.00033  3.17E-13        0.03159   0.00038   0.00029  3.17E-13
-Dados/a2.dat           0.25193   0.00114   0.00136  6.25E-13        0.26093   0.00145   0.00117  6.25E-13
-Dados/a3.dat           0.84770   0.00255   0.00304  7.06E-10        0.94658   0.00358   0.00307  7.06E-10
-Dados/a4.dat           2.01504   0.00449   0.00543  2.06E-12        2.37540   0.00676   0.00624  2.06E-12
-Dados/a5.dat           3.94789   0.00701   0.00851  4.31E-11        4.73853   0.01087   0.01024  4.31E-11
-Dados/a6.dat           6.80976   0.01013   0.01221  7.38E-11        8.28356   0.01581   0.01591  7.38E-11
-Dados/a7.dat          10.84991   0.01369   0.01669  4.86E-12       13.18766   0.02167   0.02094  4.86E-12
+Dados/a1.dat           0.04670   0.00042   0.00050  3.17E-12        0.04726   0.00053   0.00072  3.17E-12
+Dados/a2.dat           0.36486   0.00167   0.00200  8.84E-12        0.38081   0.00189   0.00171  8.84E-12
+Dados/a3.dat           1.23721   0.00375   0.00449  1.22E-08        1.33745   0.00488   0.00406  1.22E-08
+Dados/a4.dat           2.96058   0.00663   0.00809  4.13E-11        3.46062   0.00905   0.00811  4.13E-11
+Dados/a5.dat           5.27848   0.00949   0.01122  9.65E-10        6.43529   0.01446   0.01361  9.65E-10
+Dados/a6.dat           9.26094   0.01360   0.01643  1.81E-09       11.69809   0.02330   0.02210  1.81E-09
+Dados/a7.dat          14.92115   0.01829   0.02227  1.29E-10       17.67135   0.02892   0.02748  1.29E-10
 Dados/a8.dat         A matriz não é definida positiva!
 Dados/a9.dat         A matriz não é definida positiva!
 ```
