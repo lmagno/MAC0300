@@ -42,7 +42,7 @@ Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obt
 | Dados/a5.dat    | 0.16400                           | 0.00000 | 0.00000  | 2.16E-08 |   | 0.19600  | 0.00000 | 0.00000  | 2.16E-08 |
 | Dados/a6.dat    | 0.28400                           | 0.00000 | 0.00000  | 4.43E-08 |   | 0.33200  | 0.00000 | 0.00000  | 4.43E-08 |
 | Dados/a7.dat    | 0.44800                           | 0.00000 | 0.00000  | 3.40E-09 |   | 0.56000  | 0.00000 | 0.00400  | 3.40E-09 |
-| Dados/a8.dat    | A matriz não é definida positiva! |         |          |          |   |          |         |          |          |
-| Dados/a9.dat    | A matriz não é definida positiva! |         |          |          |   |          |         |          |          |
+| Dados/a8.dat    | A matriz não é definida positiva! |||||||||
+| Dados/a9.dat    | A matriz não é definida positiva! |||||||||
 
 ### Modo de uso
