@@ -141,7 +141,7 @@ nesta pasta, o que criará o executável `EP1.out` (a compilação depende do ex
 
 Se chamado na forma
 ```
-EP1.out filename1 filenam2 filename3 [...]
+EP1.out filename1 filename2 filename3 [...]
 ```
 o programa usa cada arquivo como uma entrada diferente e resolve os respectivos sistemas.
 
