@@ -34,7 +34,8 @@ onde **xᵥ** é a solução real do sistema e **x** é a calculada.
 
 Usando os arquivos de entrada padrões num Intel(R) Atom(TM) CPU D2500 @ 1.86GHz, obtém-se a saída\*
 
-```                       Colunas                                       Linhas 
+```
+Colunas                                       Linhas 
 Nome do arquivo       Cholesky   Forward  Backward      Erro       Cholesky   Forward  Backward      Erro
 Dados/a1.dat           0.03178   0.00027   0.00032  3.17E-11        0.03195   0.00035   0.00028  3.17E-11
 Dados/a2.dat           0.25150   0.00111   0.00140  1.25E-10        0.25891   0.00152   0.00118  1.25E-10
