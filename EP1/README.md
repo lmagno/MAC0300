@@ -32,17 +32,117 @@ onde **xᵥ** é a solução real do sistema e **x** é a calculada.
 ### Exemplo de saída
 Usando os arquivos de entrada padrões num Intel Core i5-4690K CPU @ 3.9GHz, obtém-se a saída
 
-|                 | Colunas                           |         |          |          |   | Linhas   |         |          |          |
-|-----------------|-----------------------------------|---------|----------|----------|---|----------|---------|----------|----------|
-| Nome do arquivo | Cholesky                          | Forward | Backward | Erro     |   | Cholesky | Forward | Backward | Erro     |
-| Dados/a1.dat    | 0.00000                           | 0.00000 | 0.00000  | 3.17E-11 |   | 0.00400  | 0.00000 | 0.00000  | 3.17E-11 |
-| Dados/a2.dat    | 0.01200                           | 0.00000 | 0.00000  | 1.25E-10 |   | 0.01200  | 0.00000 | 0.00000  | 1.25E-10 |
-| Dados/a3.dat    | 0.03600                           | 0.00000 | 0.00000  | 2.12E-07 |   | 0.04400  | 0.00000 | 0.00000  | 2.12E-07 |
-| Dados/a4.dat    | 0.08400                           | 0.00000 | 0.00000  | 8.25E-10 |   | 0.10000  | 0.00000 | 0.00000  | 8.25E-10 |
-| Dados/a5.dat    | 0.16400                           | 0.00000 | 0.00000  | 2.16E-08 |   | 0.19600  | 0.00000 | 0.00000  | 2.16E-08 |
-| Dados/a6.dat    | 0.28400                           | 0.00000 | 0.00000  | 4.43E-08 |   | 0.33200  | 0.00000 | 0.00000  | 4.43E-08 |
-| Dados/a7.dat    | 0.44800                           | 0.00000 | 0.00000  | 3.40E-09 |   | 0.56000  | 0.00000 | 0.00400  | 3.40E-09 |
-| Dados/a8.dat    | A matriz não é definida positiva! |||||||||
-| Dados/a9.dat    | A matriz não é definida positiva! |||||||||
+<table>
+  <tr>
+    <th></th>
+    <th colspan="4">Colunas</th>
+    <th></th>
+    <th colspan="4">Linhas</th>
+  </tr>
+  <tr>
+    <td>Nome do arquivo</td>
+    <td>Cholesky</td>
+    <td>Forward</td>
+    <td>Backward</td>
+    <td>Erro</td>
+    <td></td>
+    <td>Cholesky</td>
+    <td>Forward</td>
+    <td>Backward</td>
+    <td>Erro</td>
+  </tr>
+  <tr>
+    <td>Dados/a1.dat</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>3.17E-11</td>
+    <td></td>
+    <td>0.00400</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>3.17E-11</td>
+  </tr>
+  <tr>
+    <td>Dados/a2.dat</td>
+    <td>0.01200</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>1.25E-10</td>
+    <td></td>
+    <td>0.01200</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>1.25E-10</td>
+  </tr>
+  <tr>
+    <td>Dados/a3.dat</td>
+    <td>0.03600</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>2.12E-07</td>
+    <td></td>
+    <td>0.04400</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>2.12E-07</td>
+  </tr>
+  <tr>
+    <td>Dados/a4.dat</td>
+    <td>0.08400</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>8.25E-10</td>
+    <td></td>
+    <td>0.10000</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>8.25E-10</td>
+  </tr>
+  <tr>
+    <td>Dados/a5.dat</td>
+    <td>0.16400</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>2.16E-08</td>
+    <td></td>
+    <td>0.19600</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>2.16E-08</td>
+  </tr>
+  <tr>
+    <td>Dados/a6.dat</td>
+    <td>0.28400</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>4.43E-08</td>
+    <td></td>
+    <td>0.33200</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>4.43E-08</td>
+  </tr>
+  <tr>
+    <td>Dados/a7.dat</td>
+    <td>0.44800</td>
+    <td>0.00000</td>
+    <td>0.00000</td>
+    <td>3.40E-09</td>
+    <td></td>
+    <td>0.56000</td>
+    <td>0.00000</td>
+    <td>0.00400</td>
+    <td>3.40E-09</td>
+  </tr>
+  <tr>
+    <td>Dados/a8.dat</td>
+    <td colspan="9">A matriz não é definida positiva!</td>
+  </tr>
+  <tr>
+    <td>Dados/a9.dat</td>
+    <td colspan="9">A matriz não é definida positiva!</td>
+  </tr>
+</table>
 
 ### Modo de uso
