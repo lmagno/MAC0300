@@ -24,16 +24,16 @@ contains
        end if
 
        akk = sqrt(akk)
-       A(k, k) = akk 
+       A(k, k) = akk
        do i = k+1, n
           A(i, k) = A(i, k)/akk
        end do
-       
+
        do j = k+1, n
-          do i = k+1, n
+          do i = j, n
              A(i, j) = A(i, j) - A(i, k)*A(j, k)
           end do
-       end do       
+       end do
     end do
 
     status = 0
@@ -61,16 +61,16 @@ contains
        end if
 
        akk = sqrt(akk)
-       A(k, k) = akk 
+       A(k, k) = akk
        do i = k+1, n
           A(i, k) = A(i, k)/akk
        end do
-       
+
        do i = k+1, n
-          do j = k+1, n
+          do j = k+1, i
              A(i, j) = A(i, j) - A(i, k)*A(j, k)
           end do
-       end do       
+       end do
     end do
 
     status = 0
