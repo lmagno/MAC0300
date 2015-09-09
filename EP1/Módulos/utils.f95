@@ -25,4 +25,12 @@ contains
     end do
   end subroutine pmatriz
 
+  subroutine swap(a, b)
+      real, intent(inout) :: a, b
+      real :: tmp
+
+      tmp = a
+      a = b
+      b = tmp
+  end subroutine swap
 end module utils
