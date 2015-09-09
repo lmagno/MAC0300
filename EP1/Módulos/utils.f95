@@ -1,5 +1,5 @@
 ! Módulo com algumas utilidades para matrizes/vetores
-module matriz
+module utils
 implicit none
 contains
   ! Imprime um vetor em formato de coluna
@@ -7,7 +7,7 @@ contains
     real, intent(in) :: v(:)
     integer :: n, i
     n = size(v)
-    
+
     do i = 1, n
        print *, v(i)
     end do
@@ -25,4 +25,4 @@ contains
     end do
   end subroutine pmatriz
 
-end module matriz
+end module utils

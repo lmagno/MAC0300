@@ -3,14 +3,15 @@ implicit none
 contains
   function lucol(n, A, p) result(status)
     integer, intent(in)    :: n
-       real, intent(inout) :: A(:, :), p(:)
-    integer :: i, j, k, m
+       real, intent(inout) :: A(:, :)
+    integer, intent(out)   :: p(:)
+    integer :: i, j, k
     integer :: imax, status
        real :: tmp
 
     status = -1
     do k = 1, n
-       
+
        ! Acha o máximo elemento absoluto da coluna k
        ! e guarda a linha em que ele aparece
        imax = k
@@ -27,7 +28,7 @@ contains
 
        p(k) = imax
        ! Troca as linhas de forma a deixar o maior elemento
-       ! da coluna k na posição de pivô 
+       ! da coluna k na posição de pivô
        if (imax /= k) then
           do j = 1, n
              tmp = A(k, j)
@@ -49,4 +50,16 @@ contains
 
     status = 0
   end function lucol
+
+    function sscol(n, A, p, b) result(status)
+        integer, intent(in)    :: n, p(:)
+           real, intent(in)    :: A(:, :)
+           real, intent(inout) :: b(:)
+        integer :: i, j
+        real :: tmp
+        do i = 1, n
+            
+
+        end do
+    end function sscol
 end module lu

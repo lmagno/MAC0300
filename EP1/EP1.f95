@@ -1,6 +1,7 @@
 program EP1
-use matriz, only: pvec
+use utils, only: pvec
 use solchol,    only: results, solcholcol, solcholrow
+use sollu, only: sollucol
 implicit none
     integer :: i, n, status
     type (results) :: res
@@ -62,6 +63,8 @@ implicit none
         end if
     end do
 
-
+    do i = 1, n
+        status = sollucol(filenames(i))
+    end do
     deallocate(filenames)
 end program EP1

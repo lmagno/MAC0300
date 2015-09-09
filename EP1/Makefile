@@ -3,7 +3,7 @@ SOURCE = $(NAME).f95
 OUTPUT = $(NAME).out
 
 MODDIR = ./Módulos/
-MODULES = matriz trisys cholesky entrada solchol
+MODULES = utils trisys cholesky entrada solchol lu sollu
 MODFILES = $(addprefix $(MODDIR), $(MODULES:=.f95))
 
 FFLAGS = -Wall -fdefault-real-8 # Usar double como default
