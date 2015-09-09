@@ -74,9 +74,13 @@ int main()
 
   fprintf(fp,"%d",n);
 
-  for (i=0; i<n; i++)
-    for (j=0; j<n; j++)
-      fprintf(fp,"\n%3d %3d % .20e",i,j,M[i][j]);
+    for (i=0; i<n; i++)
+     if (i==n-1)
+       for (j=0; j<n; j++)
+         fprintf(fp,"\n%3d %3d % .20e",i,j,M[0][j]);
+     else
+       for (j=0; j<n; j++)
+         fprintf(fp,"\n%3d %3d % .20e",i,j,M[i][j]);
 
   for (i=0; i<n; i++)
       fprintf(fp,"\n%3d % .20e",i,b[i]);
