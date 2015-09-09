@@ -1,6 +1,6 @@
 program EP1
 use matriz, only: pvec
-use sol,    only: results, solcol, solrow
+use solchol,    only: results, solcholcol, solcholrow
 implicit none
     integer :: i, n, status
     type (results) :: res
@@ -43,7 +43,7 @@ implicit none
         print '(A20, $)', filenames(i)
 
         ! Resolve com orientação a colunas
-        status = solcol(filenames(i), res)
+        status = solcholcol(filenames(i), res)
 
         if (status == 0) then
             print '(3f10.5, es10.2, $)', res%tchol, res%tforw, res%tback, res%erro
@@ -53,7 +53,7 @@ implicit none
         end if
 
         ! Resolve com orientação a linhas
-        status = solrow(filenames(i), res)
+        status = solcholrow(filenames(i), res)
 
         if (status == 0) then
             print '(f15.5, 2f10.5, es10.2)', res%tchol, res%tforw, res%tback, res%erro

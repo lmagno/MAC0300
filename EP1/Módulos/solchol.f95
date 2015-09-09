@@ -1,4 +1,4 @@
-module sol
+module solchol
 use entrada,  only: le_sistema
 use cholesky, only: cholcol, cholrow
 use trisys,   only: forwcol, forwrow, backcol, backrow
@@ -11,7 +11,7 @@ implicit none
   end type results
 
 contains
-  function solcol(filename, res) result(status)
+  function solcholcol(filename, res) result(status)
     character(len=*), intent(in) :: filename
     type (results), intent(out) :: res
     integer :: n, i, status
@@ -77,9 +77,9 @@ contains
     deallocate(x)
     deallocate(b)
     deallocate(A)
-  end function solcol
+  end function solcholcol
 
-  function solrow(filename, res) result(status)
+  function solcholrow(filename, res) result(status)
     character(len=*), intent(in) :: filename
     type (results), intent(out) :: res
     integer :: n, i, status
@@ -145,6 +145,6 @@ contains
     deallocate(x)
     deallocate(b)
     deallocate(A)
-  end function solrow
+  end function solcholrow
 
-end module sol
+end module solchol
