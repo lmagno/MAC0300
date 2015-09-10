@@ -1,8 +1,25 @@
 module lu
-use utils, only: swap, Results
-use trisys,   only: forwcol, forwrow, backcol, backrow
+use  utils, only: swap, Results
+use trisys, only: forwcol, forwrow, backcol, backrow
 implicit none
 contains
+  ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
+  ! sua fatoração LU tal que
+  !     PA = LU
+  ! onde 
+  !     P é uma matriz de permutação
+  !     L é uma matriz triangular inferior unitária
+  !     U é uma matriz triangular superior
+  ! com orientação a colunas.
+  !    Caso A não seja singular, guarda
+  ! L na parte triangular inferior (sem a diagonal
+  ! principal) de A e U na parte triangular superior.
+  !    Além disso, guarda no vetor p uma 
+  ! representação da matriz P.
+  ! Retorna:
+  !     0: se a matriz não for singular e a fatoração
+  !        foi completada com sucesso
+  !    -1: se a matriz for singular
   function lucol(n, A, p) result(status)
     integer, intent(in)    :: n
        real, intent(inout) :: A(:, :)
@@ -28,6 +45,7 @@ contains
        end if
 
        p(k) = imax
+
        ! Troca as linhas de forma a deixar o maior elemento
        ! da coluna k na posição de pivô
        if (imax /= k) then
@@ -36,10 +54,12 @@ contains
           end do
        end if
 
+       ! Calcula os multiplicadores
        do i = k+1, n
           A(i, k) = A(i, k)/A(k, k)
        end do
 
+       ! Reduz as linhas
        do j = k+1, n
           do i = k+1, n
              A(i, j) = A(i, j) - A(k, j)*A(i, k)
@@ -50,6 +70,23 @@ contains
     status = 0
   end function lucol
 
+  ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
+  ! sua fatoração LU tal que
+  !     PA = LU
+  ! onde 
+  !     P ∈ ℝⁿˣⁿ é uma matriz de permutação
+  !     L ∈ ℝⁿˣⁿ é uma matriz triangular inferior unitária
+  !     U ∈ ℝⁿˣⁿ é uma matriz triangular superior
+  ! com orientação a colunas.
+  !    Caso A não seja singular, guarda
+  ! L na parte triangular inferior (sem a diagonal
+  ! principal) de A e U na parte triangular superior.
+  !    Além disso, guarda no vetor p uma 
+  ! representação da matriz P.
+  ! Retorna:
+  !     0: se a matriz não for singular e a fatoração
+  !        foi completada com sucesso
+  !    -1: se a matriz for singular
   function lurow(n, A, p) result(status)
     integer, intent(in)    :: n
        real, intent(inout) :: A(:, :)
@@ -75,6 +112,7 @@ contains
        end if
 
        p(k) = imax
+
        ! Troca as linhas de forma a deixar o maior elemento
        ! da coluna k na posição de pivô
        if (imax /= k) then
@@ -83,6 +121,8 @@ contains
           end do
        end if
 
+       ! Calcula os multiplicadores e
+       ! reduz as linhas
        do i = k+1, n
           A(i, k) = A(i, k)/A(k, k)
           do j = k+1, n
@@ -94,10 +134,27 @@ contains
     status = 0
   end function lurow
     
+  ! Resolve o sistema (encontra x)
+  !    LUx = Pb
+  ! com
+  !    L ∈ ℝⁿˣⁿ triangular inferior unitária
+  !    U ∈ ℝⁿˣⁿ triangular superior
+  !    P ∈ ℝⁿˣⁿ matriz de permutação
+  !    x, b ∈ ℝⁿ
+  ! com orientação a colunas.
+  !    L e U são ambas guardadas em A, e no vetor p
+  ! é guardada uma representação da matriz P.
+  !    Se L e U não forem singulares, calcula x
+  ! e o guarda no vetor b, guardando também os tempos
+  ! de execução dos passos em res.
+  ! Retorna:
+  !     0: caso L e U não forem singulares e o sistema
+  !        seja resolvido com sucesso.
+  !    -1: caso contrário.
   function sscol(n, A, p, b, res) result(status)
-    integer, intent(in)    :: n, p(:)
-    real, intent(in)    :: A(:, :)
-    real, intent(inout) :: b(:)
+           integer, intent(in)    :: n, p(:)
+              real, intent(in)    :: A(:, :)
+              real, intent(inout) :: b(:)
     type (Results), intent(inout) :: res
     integer :: i, status
     real :: start, finish
@@ -135,10 +192,28 @@ contains
 
   end function sscol
 
+
+  ! Resolve o sistema (encontra x)
+  !    LUx = Pb
+  ! com
+  !    L ∈ ℝⁿˣⁿ triangular inferior unitária
+  !    U ∈ ℝⁿˣⁿ triangular superior
+  !    P ∈ ℝⁿˣⁿ matriz de permutação
+  !    x, b ∈ ℝⁿ
+  ! com orientação a linhas.
+  !    L e U são ambas guardadas em A, e no vetor p
+  ! é guardada uma representação da matriz P.
+  !    Se L e U não forem singulares, calcula x
+  ! e o guarda no vetor b, guardando também os tempos
+  ! de execução dos passos em res.
+  ! Retorna:
+  !     0: caso L e U não forem singulares e o sistema
+  !        seja resolvido com sucesso.
+  !    -1: caso contrário.
   function ssrow(n, A, p, b, res) result(status)
-    integer, intent(in)    :: n, p(:)
-    real, intent(in)    :: A(:, :)
-    real, intent(inout) :: b(:)
+           integer, intent(in)    :: n, p(:)
+              real, intent(in)    :: A(:, :)
+              real, intent(inout) :: b(:)
     type (Results), intent(inout) :: res
     integer :: i, status
     real :: start, finish
@@ -175,5 +250,4 @@ contains
     end if
 
   end function ssrow
-
 end module lu

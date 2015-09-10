@@ -1,17 +1,17 @@
 module sollu
-use lu, only: lucol, lurow, sscol, ssrow
-use utils, only: pmatriz, pvec, swap, results
+use      lu, only: lucol, lurow, sscol, ssrow
+use   utils, only: pmatriz, pvec, swap, Results
 use entrada, only: le_sistema
 implicit none
 contains
     function sollucol(filename, res) result(status)
         character(len=*), intent(in)  :: filename
-          type (results), intent(out) :: res
-        integer :: i, n, status
+          type (Results), intent(out) :: res
            real, allocatable :: A(:, :)
            real, allocatable :: x(:), b(:)
         integer, allocatable :: p(:)
-        real :: start, finish
+        integer :: i, n, status
+           real :: start, finish
 
         call le_sistema(n, A, b, filename)
         allocate(p(n))
@@ -20,6 +20,8 @@ contains
         status = lucol(n, A, p)
         call cpu_time(finish)
         res%tdecomp = finish - start
+
+        
         if (status == -1) then
            return
         end if
@@ -46,12 +48,12 @@ contains
 
     function sollurow(filename, res) result(status)
         character(len=*), intent(in)  :: filename
-          type (results), intent(out) :: res
-        integer :: i, n, status
+          type (Results), intent(out) :: res
            real, allocatable :: A(:, :)
            real, allocatable :: x(:), b(:)
         integer, allocatable :: p(:)
-        real :: start, finish
+        integer :: i, n, status
+           real :: start, finish
 
         call le_sistema(n, A, b, filename)
         allocate(p(n))

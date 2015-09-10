@@ -1,7 +1,7 @@
 program EP1
-use utils, only: pvec, results
-use solchol,    only: solcholcol, solcholrow
-use sollu, only: sollucol, sollurow
+use   utils, only: pvec, results
+use   sollu, only: sollucol, sollurow
+use solchol, only: solcholcol, solcholrow
 implicit none
     integer :: i, n, status
     type (results) :: res
