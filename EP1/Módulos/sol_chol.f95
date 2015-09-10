@@ -1,4 +1,4 @@
-module solchol
+module sol_chol
 use    utils, only: results
 use  entrada, only: le_sistema
 use cholesky, only: cholcol, cholrow
@@ -19,7 +19,7 @@ contains
   !     0: caso a matriz seja definida positiva 
   !        e o sistema foi resolvido com sucesso.
   !    -1: caso contrário.
-  function solcholcol(filename, res) result(status)
+  function sol_chol_col(filename, res) result(status)
     character(len=*), intent(in)  :: filename
       type (results), intent(out) :: res
 
@@ -85,7 +85,7 @@ contains
     deallocate(x)
     deallocate(b)
     deallocate(A)
-  end function solcholcol
+  end function sol_chol_col
 
   ! Carrega A e b do sistema
   !     Ax = b
@@ -101,7 +101,7 @@ contains
   !     0: caso a matriz seja definida positiva 
   !        e o sistema foi resolvido com sucesso.
   !    -1: caso contrário.
-  function solcholrow(filename, res) result(status)
+  function sol_chol_row(filename, res) result(status)
     character(len=*), intent(in)  :: filename
       type (results), intent(out) :: res
 
@@ -167,6 +167,6 @@ contains
     deallocate(x)
     deallocate(b)
     deallocate(A)
-  end function solcholrow
+  end function sol_chol_row
 
-end module solchol
+end module sol_chol

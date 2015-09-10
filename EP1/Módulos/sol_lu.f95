@@ -1,4 +1,4 @@
-module sollu
+module sol_lu
 use      lu, only: lucol, lurow, sscol, ssrow
 use   utils, only: pmatriz, pvec, swap, Results
 use entrada, only: le_sistema
@@ -19,7 +19,7 @@ contains
     !     0: caso a matriz não seja singular 
     !        e o sistema foi resolvido com sucesso.
     !    -1: caso contrário.
-    function sollucol(filename, res) result(status)
+    function sol_lu_col(filename, res) result(status)
         character(len=*), intent(in)  :: filename
           type (Results), intent(out) :: res
            real, allocatable :: A(:, :)
@@ -59,7 +59,7 @@ contains
         deallocate(b)
         deallocate(x)
         deallocate(p)
-    end function sollucol
+    end function sol_lu_col
 
     ! Carrega A e b do sistema
     !     Ax = b
@@ -75,7 +75,7 @@ contains
     !     0: caso a matriz não seja singular 
     !        e o sistema foi resolvido com sucesso.
     !    -1: caso contrário.
-    function sollurow(filename, res) result(status)
+    function sol_lu_row(filename, res) result(status)
         character(len=*), intent(in)  :: filename
           type (Results), intent(out) :: res
            real, allocatable :: A(:, :)
@@ -113,5 +113,5 @@ contains
         deallocate(b)
         deallocate(x)
         deallocate(p)
-    end function sollurow
-end module sollu
+    end function sol_lu_row
+end module sol_lu

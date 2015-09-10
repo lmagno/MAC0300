@@ -1,7 +1,7 @@
 program EP1
-use   utils, only: pvec, results
-use   sollu, only: sollucol, sollurow
-use solchol, only: solcholcol, solcholrow
+use    utils, only: pvec, results
+use   sol_lu, only: sol_lu_col, sol_lu_row
+use sol_chol, only: sol_chol_col, sol_chol_row
 implicit none
     integer :: i, n, status
     type (results) :: res
@@ -45,7 +45,7 @@ implicit none
         print '(A20, $)', filenames(i)
 
         ! Resolve com orientação a colunas
-        status = solcholcol(filenames(i), res)
+        status = sol_chol_col(filenames(i), res)
 
         if (status == 0) then
             print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
@@ -55,7 +55,7 @@ implicit none
         end if
 
         ! Resolve com orientação a linhas
-        status = solcholrow(filenames(i), res)
+        status = sol_chol_row(filenames(i), res)
 
         if (status == 0) then
             print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
@@ -77,7 +77,7 @@ implicit none
         print '(A20, $)', filenames(i)
 
         ! Resolve com orientação a colunas
-        status = sollucol(filenames(i), res)
+        status = sol_lu_col(filenames(i), res)
 
         if (status == 0) then
             print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
@@ -87,7 +87,7 @@ implicit none
         end if
 
         ! Resolve com orientação a linhas
-        status = sollurow(filenames(i), res)
+        status = sol_lu_row(filenames(i), res)
 
         if (status == 0) then
             print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
