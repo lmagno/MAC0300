@@ -4,6 +4,21 @@ use   utils, only: pmatriz, pvec, swap, Results
 use entrada, only: le_sistema
 implicit none
 contains
+
+    ! Carrega A e b do sistema
+    !     Ax = b
+    ! com
+    !     A ∈ ℝⁿˣⁿ
+    !     b ∈ ℝⁿ
+    ! definidos no arquivo filename, resolve
+    ! o sistema por decomposição LU 
+    ! com orientação a colunas se possível
+    ! e guarda os tempos de execução e o erro do 
+    ! resultado em res.
+    ! Retorna:
+    !     0: caso a matriz não seja singular 
+    !        e o sistema foi resolvido com sucesso.
+    !    -1: caso contrário.
     function sollucol(filename, res) result(status)
         character(len=*), intent(in)  :: filename
           type (Results), intent(out) :: res
@@ -46,6 +61,20 @@ contains
         deallocate(p)
     end function sollucol
 
+    ! Carrega A e b do sistema
+    !     Ax = b
+    ! com
+    !     A ∈ ℝⁿˣⁿ
+    !     b ∈ ℝⁿ
+    ! definidos no arquivo filename, resolve
+    ! o sistema por decomposição LU 
+    ! com orientação a linhas se possível
+    ! e guarda os tempos de execução e o erro do 
+    ! resultado em res.
+    ! Retorna:
+    !     0: caso a matriz não seja singular 
+    !        e o sistema foi resolvido com sucesso.
+    !    -1: caso contrário.
     function sollurow(filename, res) result(status)
         character(len=*), intent(in)  :: filename
           type (Results), intent(out) :: res
