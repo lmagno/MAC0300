@@ -1,7 +1,7 @@
 program EP1
 use utils, only: pvec, results
 use solchol,    only: solcholcol, solcholrow
-use sollu, only: sollucol
+use sollu, only: sollucol, sollurow
 implicit none
     integer :: i, n, status
     type (results) :: res
@@ -87,7 +87,7 @@ implicit none
         end if
 
         ! Resolve com orientação a linhas
-        status = sollucol(filenames(i), res)
+        status = sollurow(filenames(i), res)
 
         if (status == 0) then
             print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro

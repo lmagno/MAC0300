@@ -1,5 +1,5 @@
 module sollu
-use lu, only: lucol, sscol
+use lu, only: lucol, lurow, sscol, ssrow
 use utils, only: pmatriz, pvec, swap, results
 use entrada, only: le_sistema
 implicit none
