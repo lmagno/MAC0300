@@ -11,6 +11,9 @@ contains
   !    b ∈ ℝⁿ
   ! com orientação a colunas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
+  !     Opcionalmente resolve para A triangular
+  ! inferior unitária, não acessando os elementos
+  ! da diagonal principal neste caso.
   ! Retorna
   !     0: caso tenha resolvido o sistema com sucesso
   !    -1: caso a matriz A seja singular e sistema
@@ -18,26 +21,24 @@ contains
   !
   function forwcol(n, A, b, unit) result(status)
     integer, intent(in) :: n
-    real, intent(inout) :: A(:, :), b(:)
+    real, intent(in)    :: A(:, :)
+    real, intent(inout) :: b(:)
     logical, intent(in) :: unit
     integer :: i, j, status
-    real :: ajj, bj
 
     status = -1
 
     do j = 1, n
         if (.not. unit) then
-            ajj = A(j, j)
-            if (ajj == 0) then
+            if (A(j, j) == 0) then
                 return
             end if
 
-            bj = b(j)/ajj
-            b(j) = bj
+            b(j) = b(j)/A(j, j)
         end if
 
         do i = j+1, n
-            b(i) = b(i) - bj*A(i, j)
+            b(i) = b(i) - b(j)*A(i, j)
         end do
     end do
 
@@ -51,6 +52,9 @@ contains
   !    b ∈ ℝⁿ
   ! com orientação a linhas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
+  !     Opcionalmente resolve para A triangular
+  ! inferior unitária, não acessando os elementos
+  ! da diagonal principal neste caso.
   ! Retorna
   !     0: caso tenha resolvido o sistema com sucesso
   !    -1: caso a matriz A seja singular e sistema
@@ -58,17 +62,16 @@ contains
   !
   function forwrow(n, A, b, unit) result(status)
     integer, intent(in) :: n
-    real, intent(inout) :: A(:, :), b(:)
+    real, intent(in)    :: A(:, :) 
+    real, intent(inout) :: b(:)
     logical, intent(in) :: unit
     integer :: i, j, status
-    real :: aii
 
     status = -1
 
     do i = 1, n
         if (.not. unit) then
-            aii = A(i, i)
-            if (aii == 0) then
+            if (A(i, i) == 0) then
                 return
             end if
         end if
@@ -77,7 +80,7 @@ contains
             b(i) = b(i) - b(j)*A(i, j)
         end do
 
-        if (.not. unit) b(i) = b(i)/aii
+        if (.not. unit) b(i) = b(i)/A(i, i)
     end do
 
     status = 0
@@ -100,16 +103,15 @@ contains
   !        não possa ser resolvido
   function backcol(n, A, b, trans) result(status)
     integer, intent(in) :: n
-    real, intent(inout) :: A(:, :), b(:)
+    real, intent(in)    :: A(:, :)
+    real, intent(inout) :: b(:)
     logical, intent(in) :: trans
     integer :: i, j, status
-    real :: ajj, bj
 
     status = -1
     if (trans) then
        do j = n, 1, -1
-          ajj = A(j, j)
-          if (ajj == 0) then
+          if (A(j, j) == 0) then
              return
           end if
 
@@ -117,22 +119,20 @@ contains
              b(j) = b(j) - b(i)*A(i, j)
           end do
 
-          b(j) = b(j)/ajj
+          b(j) = b(j)/A(j, j)
        end do
        status = 0
        return
     else
        do j = n, 1, -1
-          ajj = A(j, j)
-          if (ajj == 0) then
+          if (A(j, j) == 0) then
              return
           end if
 
-          b(j) = b(j)/ajj
-          bj = b(j)
+          b(j) = b(j)/A(j, j)
 
           do i = 1, j-1
-             b(i) = b(i) - bj*A(i, j)
+             b(i) = b(i) - b(j)*A(i, j)
           end do
        end do
 
@@ -157,24 +157,22 @@ contains
   !        não possa ser resolvido
   function backrow(n, A, b, trans) result(status)
     integer, intent(in) :: n
-    real, intent(inout) :: A(:, :), b(:)
+    real, intent(in)    :: A(:, :) 
+    real, intent(inout) :: b(:)
     logical, intent(in) :: trans
     integer :: i, j, status
-    real :: aii, bi
 
     status = -1
     if (trans) then
        do i = n, 1, -1
-          aii = A(i, i)
-          if (aii == 0) then
+          if (A(i, i) == 0) then
              return
           end if
 
-          b(i) = b(i)/aii
-          bi = b(i)
+          b(i) = b(i)/A(i, i)
 
           do j = 1, i-1
-             b(j) = b(j) - bi*A(i, j)
+             b(j) = b(j) - b(i)*A(i, j)
           end do
        end do
 
@@ -182,8 +180,7 @@ contains
        return
     else
        do i = n, 1, -1
-          aii = A(i, i)
-          if (aii == 0) then
+          if (A(i, i) == 0) then
              return
           end if
 
@@ -191,7 +188,7 @@ contains
              b(i) = b(i) - b(j)*A(i, j)
           end do
 
-          b(i) = b(i)/aii
+          b(i) = b(i)/A(i, i)
        end do
        status = 0
        return
