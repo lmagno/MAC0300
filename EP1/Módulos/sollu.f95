@@ -1,25 +1,86 @@
 module sollu
-use lu, only: lucol
-use matriz, only: pmatriz, pvec
+use lu, only: lucol, sscol
+use utils, only: pmatriz, pvec, swap, results
 use entrada, only: le_sistema
 implicit none
 contains
-    function sollucol(filename) result(status)
-        character(len=*), intent(in) :: filename
-        integer :: n, status
+    function sollucol(filename, res) result(status)
+        character(len=*), intent(in)  :: filename
+          type (results), intent(out) :: res
+        integer :: i, n, status
            real, allocatable :: A(:, :)
            real, allocatable :: x(:), b(:)
         integer, allocatable :: p(:)
+        real :: start, finish
 
         call le_sistema(n, A, b, filename)
-        allocate(x(n))
         allocate(p(n))
 
+        call cpu_time(start)
         status = lucol(n, A, p)
+        call cpu_time(finish)
+        res%tdecomp = finish - start
+        if (status == -1) then
+           return
+        end if
+
+        status = sscol(n, A, p, b, res)
+        if (status == -1) then
+           return
+        end if
+
+        ! Aloca e calcula o vetor solução esperado
+        allocate(x(n))
+        x = [(1 + mod(i-1, n/100), i = 1, n)]
+
+        ! Calcula a norma do vetor diferença
+        ! entre a solução esperada e a obtida,
+        ! como forma de estimativa do erro
+        res%erro = norm2(x - b)/sqrt(real(n))
 
         deallocate(A)
         deallocate(b)
         deallocate(x)
         deallocate(p)
     end function sollucol
+
+    function sollurow(filename, res) result(status)
+        character(len=*), intent(in)  :: filename
+          type (results), intent(out) :: res
+        integer :: i, n, status
+           real, allocatable :: A(:, :)
+           real, allocatable :: x(:), b(:)
+        integer, allocatable :: p(:)
+        real :: start, finish
+
+        call le_sistema(n, A, b, filename)
+        allocate(p(n))
+
+        call cpu_time(start)
+        status = lurow(n, A, p)
+        call cpu_time(finish)
+        res%tdecomp = finish - start
+        if (status == -1) then
+           return
+        end if
+
+        status = ssrow(n, A, p, b, res)
+        if (status == -1) then
+           return
+        end if
+
+        ! Aloca e calcula o vetor solução esperado
+        allocate(x(n))
+        x = [(1 + mod(i-1, n/100), i = 1, n)]
+
+        ! Calcula a norma do vetor diferença
+        ! entre a solução esperada e a obtida,
+        ! como forma de estimativa do erro
+        res%erro = norm2(x - b)/sqrt(real(n))
+
+        deallocate(A)
+        deallocate(b)
+        deallocate(x)
+        deallocate(p)
+    end function sollurow
 end module sollu

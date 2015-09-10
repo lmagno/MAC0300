@@ -33,10 +33,11 @@ implicit none
        end do
     end if
 
+    print *, "=============================================== Cholesky ==============================================="
     print  '(A30, A45)', "Colunas", "Linhas"
-    print    '(A20, $)', "Nome do arquivo     "
-    print   '(4A10, $)', "Cholesky", "Forward", "Back", "Erro"
-    print '(A15, 3A10)', "Cholesky", "Forward", "Back", "Erro"
+    print    '(A18, $)', "Nome do arquivo   "
+    print   '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
+    print      '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
 
 
     ! Resolve os sistemas
@@ -63,8 +64,37 @@ implicit none
         end if
     end do
 
+    print *, ""
+    print *, "================================================== LU =================================================="
+    print  '(A30, A45)', "Colunas", "Linhas"
+    print    '(A18, $)', "Nome do arquivo   "
+    print   '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
+    print      '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
+
+
+    ! Resolve os sistemas
     do i = 1, n
-        status = sollucol(filenames(i))
+        print '(A20, $)', filenames(i)
+
+        ! Resolve com orientação a colunas
+        status = sollucol(filenames(i), res)
+
+        if (status == 0) then
+            print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
+        else
+            print *, "A matriz é singular!"
+            CYCLE
+        end if
+
+        ! Resolve com orientação a linhas
+        status = sollucol(filenames(i), res)
+
+        if (status == 0) then
+            print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
+        else
+            print *, "A matriz é singular!"
+        end if
     end do
+
     deallocate(filenames)
 end program EP1

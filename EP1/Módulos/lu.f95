@@ -1,4 +1,6 @@
 module lu
+use utils, only: swap, Results
+use trisys,   only: forwcol, forwrow, backcol, backrow
 implicit none
 contains
   function lucol(n, A, p) result(status)
@@ -7,7 +9,6 @@ contains
     integer, intent(out)   :: p(:)
     integer :: i, j, k
     integer :: imax, status
-       real :: tmp
 
     status = -1
     do k = 1, n
@@ -31,9 +32,7 @@ contains
        ! da coluna k na posição de pivô
        if (imax /= k) then
           do j = 1, n
-             tmp = A(k, j)
-             A(k, j) = A(imax, j)
-             A(imax, j) = tmp
+            call swap(A(k, j), A(imax, j))
           end do
        end if
 
@@ -50,16 +49,46 @@ contains
 
     status = 0
   end function lucol
+  
+  function sscol(n, A, p, b, res) result(status)
+    integer, intent(in)    :: n, p(:)
+    real, intent(in)    :: A(:, :)
+    real, intent(inout) :: b(:)
+    type (Results), intent(inout) :: res
+    integer :: i, status
+    real :: start, finish
+  
+    ! Calcula Pb
+    do i = 1, n
+       call swap(b(i), b(p(i)))
+    end do
 
-    function sscol(n, A, p, b) result(status)
-        integer, intent(in)    :: n, p(:)
-           real, intent(in)    :: A(:, :)
-           real, intent(inout) :: b(:)
-        integer :: i, j
-        real :: tmp
-        do i = 1, n
-            
+    ! Agora temos o sistema
+    !    LUx = Pb
 
-        end do
-    end function sscol
+    ! Primeiro resolvemos
+    !    Ly = Pb
+
+    call cpu_time(start)
+    status = forwcol(n, A, b, unit = .true.)
+    call cpu_time(finish)
+    res%tforw = finish - start
+
+    if (status == -1) then
+       return
+    end if
+
+    ! Agora resolvemos
+    !    Ux = y
+    call cpu_time(start)
+    status = backcol(n, A, b, trans = .false.)
+    call cpu_time(finish)
+    res%tback = finish - start
+
+    if (status == -1) then
+       return
+    end if
+
+  end function sscol
+
 end module lu
