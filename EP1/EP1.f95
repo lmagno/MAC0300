@@ -3,8 +3,7 @@ use    utils, only: pvec, Results
 use   sol_lu, only: sol_lu_col, sol_lu_row
 use sol_chol, only: sol_chol_col, sol_chol_row
 implicit none
-    integer :: i, n, status
-    type (Results) :: res
+    integer :: i, n
     character(len=72), allocatable :: filenames(:)
 
     n = IARGC()
@@ -34,67 +33,51 @@ implicit none
     end if
 
     print *, "=============================================== Cholesky ==============================================="
-    print  '(A30, A45)', "Colunas", "Linhas"
-    print    '(A18, $)', "Nome do arquivo   "
-    print   '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
-    print      '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
-
-
-    ! Resolve os sistemas
-    do i = 1, n
-        print '(A20, $)', filenames(i)
-
-        ! Resolve com orientação a colunas
-        status = sol_chol_col(filenames(i), res)
-
-        if (status == 0) then
-            print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
-        else
-            print *, "A matriz não é definida positiva!"
-            CYCLE
-        end if
-
-        ! Resolve com orientação a linhas
-        status = sol_chol_row(filenames(i), res)
-
-        if (status == 0) then
-            print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
-        else
-            print *, "A matriz não é definida positiva!"
-        end if
-    end do
+    call solve_systems(filenames, sol_chol_col, sol_chol_row, "A matriz não é definida positiva!")
 
     print *, ""
     print *, "================================================== LU =================================================="
-    print  '(A30, A45)', "Colunas", "Linhas"
-    print    '(A18, $)', "Nome do arquivo   "
-    print   '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
-    print      '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
+    call solve_systems(filenames, sol_lu_col, sol_lu_row, "A matriz é singular!")
 
+    deallocate(filenames)
+
+contains
+  subroutine solve_systems(filenames, sol_col, sol_row, errmsg)
+    character(len=*), intent(in) :: filenames(:), errmsg
+    integer :: sol_col, sol_row
+    integer :: i, n, status
+    type (Results) :: res
+    
+    ! Cabeçalho
+    print     '(A30, A45)', "Colunas", "Linhas"
+    print       '(A18, $)', "Nome do arquivo   "
+    print '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
+    print    '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
 
     ! Resolve os sistemas
+    n = size(filenames)
     do i = 1, n
         print '(A20, $)', filenames(i)
 
         ! Resolve com orientação a colunas
-        status = sol_lu_col(filenames(i), res)
+        status = sol_col(filenames(i), res)
 
         if (status == 0) then
             print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
         else
-            print *, "A matriz é singular!"
+            print *, errmsg
             CYCLE
         end if
 
         ! Resolve com orientação a linhas
-        status = sol_lu_row(filenames(i), res)
+        status = sol_row(filenames(i), res)
 
         if (status == 0) then
             print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
         else
-            print *, "A matriz é singular!"
+            print *, errmsg
         end if
     end do
-
-    deallocate(filenames)
+    
+  end subroutine solve_systems
 end program EP1
