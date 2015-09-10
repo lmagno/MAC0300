@@ -2,11 +2,11 @@
 module utils
 implicit none
 
-    type results
+    type Results
        sequence
        real :: erro
        real :: tdecomp, tforw, tback
-    end type results
+    end type Results
 
 contains
   ! Imprime um vetor em formato de coluna

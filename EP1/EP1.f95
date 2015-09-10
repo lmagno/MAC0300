@@ -1,10 +1,10 @@
 program EP1
-use    utils, only: pvec, results
+use    utils, only: pvec, Results
 use   sol_lu, only: sol_lu_col, sol_lu_row
 use sol_chol, only: sol_chol_col, sol_chol_row
 implicit none
     integer :: i, n, status
-    type (results) :: res
+    type (Results) :: res
     character(len=72), allocatable :: filenames(:)
 
     n = IARGC()
