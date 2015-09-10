@@ -1,18 +1,32 @@
 module solchol
-use utils,    only: results
-use entrada,  only: le_sistema
+use    utils, only: results
+use  entrada, only: le_sistema
 use cholesky, only: cholcol, cholrow
-use trisys,   only: forwcol, forwrow, backcol, backrow
+use   trisys, only: forwcol, forwrow, backcol, backrow
 implicit none
 contains
+  ! Carrega A e b do sistema
+  !     Ax = b
+  ! com
+  !     A ∈ ℝⁿˣⁿ
+  !     b ∈ ℝⁿ
+  ! definidos no arquivo filename, resolve
+  ! o sistema por decomposição de Cholesky 
+  ! com orientação a colunas se possível
+  ! e guarda os tempos de execução e o erro do 
+  ! resultado em res.
+  ! Retorna:
+  !     0: caso a matriz seja definida positiva 
+  !        e o sistema foi resolvido com sucesso.
+  !    -1: caso contrário.
   function solcholcol(filename, res) result(status)
-    character(len=*), intent(in) :: filename
-    type (results), intent(out) :: res
+    character(len=*), intent(in)  :: filename
+      type (results), intent(out) :: res
+
+    real, allocatable :: A(:, :)
+    real, allocatable :: x(:), b(:)
     integer :: n, i, status
     real :: start, finish
-    real, allocatable, dimension(:, :) :: A
-    real, allocatable, dimension(:)    :: x, b
-    status = 0
 
     ! Carrega o sistema
     call le_sistema(n, A, b, filename)
@@ -73,14 +87,28 @@ contains
     deallocate(A)
   end function solcholcol
 
+  ! Carrega A e b do sistema
+  !     Ax = b
+  ! com
+  !     A ∈ ℝⁿˣⁿ
+  !     b ∈ ℝⁿ
+  ! definidos no arquivo filename, resolve
+  ! o sistema por decomposição de Cholesky 
+  ! com orientação a linhas se possível
+  ! e guarda os tempos de execução e o erro do 
+  ! resultado em res.
+  ! Retorna:
+  !     0: caso a matriz seja definida positiva 
+  !        e o sistema foi resolvido com sucesso.
+  !    -1: caso contrário.
   function solcholrow(filename, res) result(status)
-    character(len=*), intent(in) :: filename
-    type (results), intent(out) :: res
+    character(len=*), intent(in)  :: filename
+      type (results), intent(out) :: res
+
+    real, allocatable :: A(:, :)
+    real, allocatable :: x(:), b(:)
     integer :: n, i, status
     real :: start, finish
-    real, allocatable, dimension(:, :) :: A
-    real, allocatable, dimension(:)    :: x, b
-    status = 0
 
     ! Carrega o sistema
     call le_sistema(n, A, b, filename)
