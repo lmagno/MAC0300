@@ -1,6 +1,13 @@
 ! Módulo com algumas utilidades para matrizes/vetores
 module utils
 implicit none
+
+    type results
+       sequence
+       real :: erro
+       real :: tdecomp, tforw, tback
+    end type results
+
 contains
   ! Imprime um vetor em formato de coluna
   subroutine pvec(v)
@@ -33,4 +40,5 @@ contains
       a = b
       b = tmp
   end subroutine swap
+
 end module utils

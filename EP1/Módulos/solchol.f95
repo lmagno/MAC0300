@@ -1,15 +1,9 @@
 module solchol
+use utils,    only: results
 use entrada,  only: le_sistema
 use cholesky, only: cholcol, cholrow
 use trisys,   only: forwcol, forwrow, backcol, backrow
 implicit none
-
-  type results
-     sequence
-     real :: erro
-     real :: tchol, tforw, tback
-  end type results
-
 contains
   function solcholcol(filename, res) result(status)
     character(len=*), intent(in) :: filename
@@ -28,7 +22,7 @@ contains
     call cpu_time(start)
     status = cholcol(n, A)
     call cpu_time(finish)
-    res%tchol = finish - start
+    res%tdecomp = finish - start
 
     ! Retorna a função caso a matriz não seja
     ! positiva definida
@@ -96,7 +90,7 @@ contains
     call cpu_time(start)
     status = cholrow(n, A)
     call cpu_time(finish)
-    res%tchol = finish - start
+    res%tdecomp = finish - start
 
     ! Retorna a função caso a matriz não seja
     ! positiva definida

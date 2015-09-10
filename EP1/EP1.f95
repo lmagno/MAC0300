@@ -1,6 +1,6 @@
 program EP1
-use utils, only: pvec
-use solchol,    only: results, solcholcol, solcholrow
+use utils, only: pvec, results
+use solchol,    only: solcholcol, solcholrow
 use sollu, only: sollucol
 implicit none
     integer :: i, n, status
@@ -47,7 +47,7 @@ implicit none
         status = solcholcol(filenames(i), res)
 
         if (status == 0) then
-            print '(3f10.5, es10.2, $)', res%tchol, res%tforw, res%tback, res%erro
+            print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
         else
             print *, "A matriz não é definida positiva!"
             CYCLE
@@ -57,7 +57,7 @@ implicit none
         status = solcholrow(filenames(i), res)
 
         if (status == 0) then
-            print '(f15.5, 2f10.5, es10.2)', res%tchol, res%tforw, res%tback, res%erro
+            print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
         else
             print *, "A matriz não é definida positiva!"
         end if
