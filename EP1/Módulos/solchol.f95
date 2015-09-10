@@ -38,30 +38,30 @@ contains
 
     ! Agora temos o sistema
     !     G(Gᵀx) = b
-    
+
     ! Gy = b
     call cpu_time(start)
-    status = forwcol(n, A, b)
+    status = forwcol(n, A, b, unit = .false.)
     call cpu_time(finish)
     res%tforw = finish - start
-    
+
     ! Retorna a função caso a matriz seja
     ! singular
     if (status == -1) then
        return
-    end if    
+    end if
 
     ! Gᵀx = y
     call cpu_time(start)
-    status = backcol(n, A, b, .true.)
+    status = backcol(n, A, b, trans = .true.)
     call cpu_time(finish)
     res%tback = finish - start
-    
+
     ! Retorna a função caso a matriz seja
     ! singular
     if (status == -1) then
        return
-    end if    
+    end if
 
     ! Aloca e calcula o vetor solução esperado
     allocate(x(n))
@@ -106,30 +106,30 @@ contains
 
     ! Agora temos o sistema
     !     G(Gᵀx) = b
-    
+
     ! Gy = b
     call cpu_time(start)
-    status = forwrow(n, A, b)
+    status = forwrow(n, A, b, unit = .false.)
     call cpu_time(finish)
     res%tforw = finish - start
-    
+
     ! Retorna a função caso a matriz seja
     ! singular
     if (status == -1) then
        return
-    end if    
+    end if
 
     ! Gᵀx = y
     call cpu_time(start)
-    status = backrow(n, A, b, .true.)
+    status = backrow(n, A, b, trans = .true.)
     call cpu_time(finish)
     res%tback = finish - start
-    
+
     ! Retorna a função caso a matriz seja
     ! singular
     if (status == -1) then
        return
-    end if    
+    end if
 
     ! Aloca e calcula o vetor solução esperado
     allocate(x(n))

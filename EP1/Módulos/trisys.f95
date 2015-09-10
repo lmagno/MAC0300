@@ -9,33 +9,36 @@ contains
   ! com
   !    A ∈ ℝⁿˣⁿ, triangular inferior
   !    b ∈ ℝⁿ
-  ! com orientação a colunas, gravando 
+  ! com orientação a colunas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
   ! Retorna
   !     0: caso tenha resolvido o sistema com sucesso
   !    -1: caso a matriz A seja singular e sistema
   !        não possa ser resolvido
-  ! 
-  function forwcol(n, A, b) result(status)
+  !
+  function forwcol(n, A, b, unit) result(status)
     integer, intent(in) :: n
     real, intent(inout) :: A(:, :), b(:)
+    logical, intent(in) :: unit
     integer :: i, j, status
     real :: ajj, bj
 
     status = -1
 
     do j = 1, n
-       ajj = A(j, j)
-       if (ajj == 0) then
-          return
-       end if
+        if (.not. unit) then
+            ajj = A(j, j)
+            if (ajj == 0) then
+                return
+            end if
 
-       bj = b(j)/ajj
-       b(j) = bj
+            bj = b(j)/ajj
+            b(j) = bj
+        end if
 
-       do i = j+1, n
-          b(i) = b(i) - bj*A(i, j)
-       end do
+        do i = j+1, n
+            b(i) = b(i) - bj*A(i, j)
+        end do
     end do
 
     status = 0
@@ -46,32 +49,35 @@ contains
   ! com
   !    A ∈ ℝⁿˣⁿ, triangular inferior
   !    b ∈ ℝⁿ
-  ! com orientação a linhas, gravando 
+  ! com orientação a linhas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
   ! Retorna
   !     0: caso tenha resolvido o sistema com sucesso
   !    -1: caso a matriz A seja singular e sistema
   !        não possa ser resolvido
-  ! 
-  function forwrow(n, A, b) result(status)
+  !
+  function forwrow(n, A, b, unit) result(status)
     integer, intent(in) :: n
     real, intent(inout) :: A(:, :), b(:)
+    logical, intent(in) :: unit
     integer :: i, j, status
     real :: aii
 
     status = -1
 
     do i = 1, n
-       aii = A(i, i)
-       if (aii == 0) then
-          return
-       end if
+        if (.not. unit) then
+            aii = A(i, i)
+            if (aii == 0) then
+                return
+            end if
+        end if
 
-       do j = 1, i-1
-          b(i) = b(i) - b(j)*A(i, j)
-       end do
+        do j = 1, i-1
+            b(i) = b(i) - b(j)*A(i, j)
+        end do
 
-       b(i) = b(i)/aii
+        if (.not. unit) b(i) = b(i)/aii
     end do
 
     status = 0
@@ -83,7 +89,7 @@ contains
   ! com
   !    A ∈ ℝⁿˣⁿ, triangular superior
   !    b ∈ ℝⁿ
-  ! com orientação a colunas, gravando 
+  ! com orientação a colunas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
   !   Além disso, pode receber no lugar de A,
   ! sua transposta, fato indicado pela variável
@@ -106,7 +112,7 @@ contains
           if (ajj == 0) then
              return
           end if
-          
+
           do i = j+1, n
              b(j) = b(j) - b(i)*A(i, j)
           end do
@@ -140,7 +146,7 @@ contains
   ! com
   !    A ∈ ℝⁿˣⁿ, triangular superior
   !    b ∈ ℝⁿ
-  ! com orientação a linhas, gravando 
+  ! com orientação a linhas, gravando
   ! a solução (x ∈ ℝⁿ) sobre o vetor b.
   !   Além disso, pode receber no lugar de A,
   ! sua transposta, fato indicado pela variável
@@ -180,7 +186,7 @@ contains
           if (aii == 0) then
              return
           end if
-          
+
           do j = i+1, n
              b(i) = b(i) - b(j)*A(i, j)
           end do
