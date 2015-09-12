@@ -1,11 +1,11 @@
 module sol_lu
-use      lu, only: lucol, lurow, sscol, ssrow
 use   utils, only: pmatriz, pvec, swap, Results
+use      lu, only: lucol, lurow, sscol, ssrow
 use entrada, only: le_sistema
 implicit none
 contains
     function sol_lu_col(filename, res) result(status)
-        character(len=*), intent(in)  :: filename
+        character(len=*), intent(in)    :: filename
           type (Results), intent(inout) :: res
         integer :: status
 
@@ -13,13 +13,12 @@ contains
     end function sol_lu_col
 
     function sol_lu_row(filename, res) result(status)
-        character(len=*), intent(in)  :: filename
+        character(len=*), intent(in)    :: filename
           type (Results), intent(inout) :: res
         integer :: status
 
         status = sol_lu_generic(filename, lurow, ssrow, res)
     end function sol_lu_row
-
     ! Carrega A e b do sistema
     !     Ax = b
     ! com
@@ -37,12 +36,29 @@ contains
     function sol_lu_generic(filename, lu, ss, res) result(status)
         character(len=*), intent(in)  :: filename
           type (Results), intent(inout) :: res
-          integer :: lu, ss
+          integer:: lu, ss
            real, allocatable :: A(:, :)
            real, allocatable :: x(:), b(:)
         integer, allocatable :: p(:)
         integer :: i, n, status
            real :: start, finish
+
+        ! Interfaces para poder usar as funções
+        interface 
+           function lu(n, A, p)
+             integer, intent(in)    :: n
+                real, intent(inout) :: A(:, :)
+             integer, intent(out)   :: p(:)
+           end function lu
+
+           function ss(n, A, p, b, res)
+             use utils, only: Results
+                    integer, intent(in)    :: n, p(:)
+                       real, intent(in)    :: A(:, :)
+                       real, intent(inout) :: b(:)
+             type (Results), intent(inout) :: res
+           end function ss
+        end interface
 
         call le_sistema(n, A, b, filename)
         allocate(p(n))

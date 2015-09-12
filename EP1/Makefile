@@ -6,7 +6,7 @@ MODDIR = ./Módulos/
 MODULES = utils entrada trisys cholesky sol_chol lu sol_lu
 MODFILES = $(addprefix $(MODDIR), $(MODULES:=.f95))
 
-FFLAGS = -Wall -fdefault-real-8 -g # Usar double como default
+FFLAGS = -Wall -fdefault-real-8 -g3 -Wimplicit-interface # Usar double como default
 
 .PHONY: all clean
 

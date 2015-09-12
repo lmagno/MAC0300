@@ -21,7 +21,7 @@ contains
   !    -1: caso contrário.
   function sol_chol_col(filename, res) result(status)
     character(len=*), intent(in)  :: filename
-      type (results), intent(out) :: res
+      type (results), intent(inout) :: res
 
     real, allocatable :: A(:, :)
     real, allocatable :: x(:), b(:)
@@ -103,7 +103,7 @@ contains
   !    -1: caso contrário.
   function sol_chol_row(filename, res) result(status)
     character(len=*), intent(in)  :: filename
-      type (results), intent(out) :: res
+      type (results), intent(inout) :: res
 
     real, allocatable :: A(:, :)
     real, allocatable :: x(:), b(:)
@@ -168,5 +168,4 @@ contains
     deallocate(b)
     deallocate(A)
   end function sol_chol_row
-
 end module sol_chol

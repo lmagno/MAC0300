@@ -43,11 +43,27 @@ implicit none
 
 contains
   subroutine solve_systems(filenames, sol_col, sol_row, errmsg)
-    character(len=*), intent(in) :: filenames(:), errmsg
+    character(len=*), intent(inout) :: filenames(:)
+    character(len=*) :: errmsg
     integer :: sol_col, sol_row
     integer :: i, n, status
     type (Results) :: res
-    
+
+    ! Interface para poder utilizar as funções
+    interface
+         function sol_col(filename, res)
+           use utils, only: Results
+           character(len=*), intent(in)    :: filename
+             type (Results), intent(inout) :: res
+         end function sol_col
+
+         function sol_row(filename, res)
+           use utils, only: Results
+           character(len=*), intent(in)    :: filename
+             type (Results), intent(inout) :: res
+         end function sol_row
+    end interface
+
     ! Cabeçalho
     print     '(A30, A45)', "Colunas", "Linhas"
     print       '(A18, $)', "Nome do arquivo   "
