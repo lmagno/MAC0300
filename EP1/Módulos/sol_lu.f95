@@ -28,8 +28,8 @@ contains
     !     A ∈ ℝⁿˣⁿ
     !     b ∈ ℝⁿ
     ! definidos no arquivo filename, resolve
-    ! o sistema por decomposição LU
-    ! com orientação a linhas se possível
+    ! o sistema por decomposição LU se possível
+    ! com orientação dependente das funções passadas.
     ! e guarda os tempos de execução e o erro do
     ! resultado em res.
     ! Retorna:
