@@ -40,11 +40,11 @@ program EP1
         end do
     end if
 
-    print *, "=============================================== Cholesky ==============================================="
+    print *, "============================================= Cholesky ============================================="
     call solve_systems(chol_filenames, sol_chol_col, sol_chol_row, "A matriz não é definida positiva!")
 
     print *, ""
-    print *, "================================================== LU =================================================="
+    print *, "================================================ LU ================================================"
     call solve_systems(lu_filenames, sol_lu_col, sol_lu_row, "A matriz é singular!")
 
     deallocate(chol_filenames)
@@ -77,10 +77,10 @@ contains
     end interface
 
     ! Cabeçalho
-    print     '(A30, A45)', "Colunas", "Linhas"
-    print       '(A18, $)', "Nome do arquivo   "
-    print '(A14, 3A10, $)', "Decomposição", "Forward", "Back", "Erro"
-    print    '(A17, 3A10)', "Decomposição", "Forward", "Back", "Erro"
+    print    '(A30, A43)',         "Colunas", "Linhas"
+    print    '(A18, $)',           "Nome do arquivo   "
+    print    '(A14, 2A10, A8, $)', "Decomposição", "Forward", "Back", "Erro"
+    print    '(A17, 2A10, A8)',    "Decomposição", "Forward", "Back", "Erro"
 
     ! Resolve os sistemas
     n = size(filenames)
@@ -91,7 +91,7 @@ contains
         status = sol_col(filenames(i), res)
 
         if (status == 0) then
-            print '(3f10.5, es10.2, $)', res%tdecomp, res%tforw, res%tback, res%erro
+            print '(3f10.5, f8.2 $)', res%tdecomp, res%tforw, res%tback, log10(res%erro)
         else
             print *, errmsg
             CYCLE
@@ -101,9 +101,9 @@ contains
         status = sol_row(filenames(i), res)
 
         if (status == 0) then
-            print '(f15.5, 2f10.5, es10.2)', res%tdecomp, res%tforw, res%tback, res%erro
+            print '(f15.5, 2f10.5, f8.2)', res%tdecomp, res%tforw, res%tback, log10(res%erro)
         else
-            print *, errmsg
+            print '(A30)', errmsg
         end if
     end do
 
