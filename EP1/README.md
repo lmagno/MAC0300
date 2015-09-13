@@ -25,7 +25,7 @@ _Nota: o fator de Cholesky **G** é gravado sobre a parte triangular inferior de
 
 Esse processo é executado uma vez com orientação a colunas e uma vez com orientação a linhas, imprimindo os tempos de execução em segundos de cada passo, bem como o erro, definido como:
 
-> Erro = ‖**xᵥ**-**x**‖/√n
+> Erro = log₁₀(‖**xᵥ**-**x**‖/√n)
 
 onde **xᵥ** é a solução real do sistema, **x** é a solução calculada, n é o tamanho do vetor e ‖.‖ a norma euclidiana.
 
