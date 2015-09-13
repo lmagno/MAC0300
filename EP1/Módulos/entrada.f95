@@ -1,12 +1,15 @@
 module entrada
 contains
     subroutine le_sistema(n, A, b, filename)
-        integer, intent(out) :: n
+        integer,           intent(out) :: n
+        character(len=*),  intent(in)  :: filename
         real, allocatable, intent(out) :: b(:)
         real, allocatable, intent(out) :: A(:, :)
-        character(len=*), intent(in) :: filename
+        integer :: ioerr
 
-        open(1, file = filename, status = 'old')
+        ! Tenta abrir o arquivo e checa se conseguiu
+        open(1, file = filename, status = 'old', iostat=ioerr)
+        if (ioerr /= 0) stop "Não foi possível abrir o arquivo!"
 
         ! Lê o tamanho n do sistema e aloca a memória necessária
         read(1, *) n
