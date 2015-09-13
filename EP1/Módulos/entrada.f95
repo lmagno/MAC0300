@@ -5,6 +5,7 @@ contains
         character(len=*),  intent(in)  :: filename
         real, allocatable, intent(out) :: b(:)
         real, allocatable, intent(out) :: A(:, :)
+        
         integer :: ioerr
 
         ! Tenta abrir o arquivo e checa se conseguiu

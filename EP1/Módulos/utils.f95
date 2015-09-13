@@ -1,44 +1,48 @@
 ! Módulo com algumas utilidades para matrizes/vetores
 module utils
-implicit none
+    implicit none
 
     type Results
-       sequence
-       real :: erro
-       real :: tdecomp, tforw, tback
+        sequence
+        real :: erro
+        real :: tdecomp, tforw, tback
     end type Results
 
 contains
-  ! Imprime um vetor em formato de coluna
-  subroutine pvec(v)
-    real, intent(in) :: v(:)
-    integer :: n, i
-    n = size(v)
+    ! Imprime um vetor em formato de coluna
+    subroutine pvec(v)
+        real, intent(in) :: v(:)
 
-    do i = 1, n
-       print *, v(i)
-    end do
-  end subroutine pvec
+        integer :: n, i
 
-  ! Imprime uma matriz
-  subroutine pmatriz(A)
-    real, intent(in) :: A(:, :)
-    integer :: s(2), i
+        n = size(v)
 
-    s = shape(A)
+        do i = 1, n
+            print *, v(i)
+        end do
+    end subroutine pvec
 
-    do i = 1, s(1)
-       print *, A(i, :)
-    end do
-  end subroutine pmatriz
+    ! Imprime uma matriz
+    subroutine pmatriz(A)
+        real, intent(in) :: A(:, :)
 
-  subroutine swap(a, b)
-      real, intent(inout) :: a, b
-      real :: tmp
+        integer :: s(2), i
 
-      tmp = a
-      a = b
-      b = tmp
-  end subroutine swap
+        s = shape(A)
+
+        do i = 1, s(1)
+            print *, A(i, :)
+        end do
+    end subroutine pmatriz
+
+    subroutine swap(a, b)
+        real, intent(inout) :: a, b
+
+        real :: tmp
+
+        tmp = a
+        a = b
+        b = tmp
+    end subroutine swap
 
 end module utils

@@ -1,253 +1,257 @@
 module lu
-use  utils, only: swap, Results
-use trisys, only: forwcol, forwrow, backcol, backrow
-implicit none
+    use  utils, only: swap, Results
+    use trisys, only: forwcol, forwrow, backcol, backrow
+    implicit none
 contains
-  ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
-  ! sua fatoração LU tal que
-  !     PA = LU
-  ! onde 
-  !     P é uma matriz de permutação
-  !     L é uma matriz triangular inferior unitária
-  !     U é uma matriz triangular superior
-  ! com orientação a colunas.
-  !    Caso A não seja singular, guarda
-  ! L na parte triangular inferior (sem a diagonal
-  ! principal) de A e U na parte triangular superior.
-  !    Além disso, guarda no vetor p uma 
-  ! representação da matriz P.
-  ! Retorna:
-  !     0: se a matriz não for singular e a fatoração
-  !        foi completada com sucesso
-  !    -1: se a matriz for singular
-  function lucol(n, A, p) result(status)
-    integer, intent(in)    :: n
-       real, intent(inout) :: A(:, :)
-    integer, intent(out)   :: p(:)
-    integer :: i, j, k
-    integer :: imax, status
+    ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
+    ! sua fatoração LU tal que
+    !     PA = LU
+    ! onde
+    !     P é uma matriz de permutação
+    !     L é uma matriz triangular inferior unitária
+    !     U é uma matriz triangular superior
+    ! com orientação a colunas.
+    !    Caso A não seja singular, guarda
+    ! L na parte triangular inferior (sem a diagonal
+    ! principal) de A e U na parte triangular superior.
+    !    Além disso, guarda no vetor p uma
+    ! representação da matriz P.
+    ! Retorna:
+    !     0: se a matriz não for singular e a fatoração
+    !        foi completada com sucesso
+    !    -1: se a matriz for singular
+    function lucol(n, A, p) result(status)
+        integer, intent(in)    :: n
+        real,    intent(inout) :: A(:, :)
+        integer, intent(out)   :: p(:)
 
-    status = -1
-    do k = 1, n
+        integer :: i, j, k
+        integer :: imax, status
 
-       ! Acha o máximo elemento absoluto da coluna k
-       ! e guarda a linha em que ele aparece
-       imax = k
-       do i = k+1, n
-          if (abs(A(i, k)) > abs(A(imax, k))) then
-             imax = i
-          end if
-       end do
+        status = -1
+        do k = 1, n
 
-       ! Verifica se a matriz é singular
-       if (A(imax, k) == 0.0) then
-          return
-       end if
+            ! Acha o máximo elemento absoluto da coluna k
+            ! e guarda a linha em que ele aparece
+            imax = k
+            do i = k+1, n
+                if (abs(A(i, k)) > abs(A(imax, k))) then
+                    imax = i
+                end if
+            end do
 
-       p(k) = imax
+            ! Verifica se a matriz é singular
+            if (A(imax, k) == 0.0) then
+                return
+            end if
 
-       ! Troca as linhas de forma a deixar o maior elemento
-       ! da coluna k na posição de pivô
-       if (imax /= k) then
-          do j = 1, n
-            call swap(A(k, j), A(imax, j))
-          end do
-       end if
+            p(k) = imax
 
-       ! Calcula os multiplicadores
-       do i = k+1, n
-          A(i, k) = A(i, k)/A(k, k)
-       end do
+            ! Troca as linhas de forma a deixar o maior elemento
+            ! da coluna k na posição de pivô
+            if (imax /= k) then
+                do j = 1, n
+                    call swap(A(k, j), A(imax, j))
+                end do
+            end if
 
-       ! Reduz as linhas
-       do j = k+1, n
-          do i = k+1, n
-             A(i, j) = A(i, j) - A(k, j)*A(i, k)
-          end do
-       end do
-    end do
+            ! Calcula os multiplicadores
+            do i = k+1, n
+                A(i, k) = A(i, k)/A(k, k)
+            end do
 
-    status = 0
-  end function lucol
+            ! Reduz as linhas
+            do j = k+1, n
+                do i = k+1, n
+                    A(i, j) = A(i, j) - A(k, j)*A(i, k)
+                end do
+            end do
+        end do
 
-  ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
-  ! sua fatoração LU tal que
-  !     PA = LU
-  ! onde 
-  !     P ∈ ℝⁿˣⁿ é uma matriz de permutação
-  !     L ∈ ℝⁿˣⁿ é uma matriz triangular inferior unitária
-  !     U ∈ ℝⁿˣⁿ é uma matriz triangular superior
-  ! com orientação a colunas.
-  !    Caso A não seja singular, guarda
-  ! L na parte triangular inferior (sem a diagonal
-  ! principal) de A e U na parte triangular superior.
-  !    Além disso, guarda no vetor p uma 
-  ! representação da matriz P.
-  ! Retorna:
-  !     0: se a matriz não for singular e a fatoração
-  !        foi completada com sucesso
-  !    -1: se a matriz for singular
-  function lurow(n, A, p) result(status)
-    integer, intent(in)    :: n
-       real, intent(inout) :: A(:, :)
-    integer, intent(out)   :: p(:)
-    integer :: i, j, k
-    integer :: imax, status
+        status = 0
+    end function lucol
 
-    status = -1
-    do k = 1, n
+    ! Dada uma matriz A ∈ ℝⁿˣⁿ, calcula
+    ! sua fatoração LU tal que
+    !     PA = LU
+    ! onde
+    !     P ∈ ℝⁿˣⁿ é uma matriz de permutação
+    !     L ∈ ℝⁿˣⁿ é uma matriz triangular inferior unitária
+    !     U ∈ ℝⁿˣⁿ é uma matriz triangular superior
+    ! com orientação a colunas.
+    !    Caso A não seja singular, guarda
+    ! L na parte triangular inferior (sem a diagonal
+    ! principal) de A e U na parte triangular superior.
+    !    Além disso, guarda no vetor p uma
+    ! representação da matriz P.
+    ! Retorna:
+    !     0: se a matriz não for singular e a fatoração
+    !        foi completada com sucesso
+    !    -1: se a matriz for singular
+    function lurow(n, A, p) result(status)
+        integer, intent(in)    :: n
+        real,    intent(inout) :: A(:, :)
+        integer, intent(out)   :: p(:)
 
-       ! Acha o máximo elemento absoluto da coluna k
-       ! e guarda a linha em que ele aparece
-       imax = k
-       do i = k+1, n
-          if (abs(A(i, k)) > abs(A(imax, k))) then
-             imax = i
-          end if
-       end do
+        integer :: i, j, k
+        integer :: imax, status
 
-       ! Verifica se a matriz é singular
-       if (A(imax, k) == 0.0) then
-          return
-       end if
+        status = -1
+        do k = 1, n
 
-       p(k) = imax
+            ! Acha o máximo elemento absoluto da coluna k
+            ! e guarda a linha em que ele aparece
+            imax = k
+            do i = k+1, n
+                if (abs(A(i, k)) > abs(A(imax, k))) then
+                    imax = i
+                end if
+            end do
 
-       ! Troca as linhas de forma a deixar o maior elemento
-       ! da coluna k na posição de pivô
-       if (imax /= k) then
-          do j = 1, n
-            call swap(A(k, j), A(imax, j))
-          end do
-       end if
+            ! Verifica se a matriz é singular
+            if (A(imax, k) == 0.0) then
+                return
+            end if
 
-       ! Calcula os multiplicadores e
-       ! reduz as linhas
-       do i = k+1, n
-          A(i, k) = A(i, k)/A(k, k)
-          do j = k+1, n
-             A(i, j) = A(i, j) - A(k, j)*A(i, k)
-          end do
-       end do
-    end do
+            p(k) = imax
 
-    status = 0
-  end function lurow
-    
-  ! Resolve o sistema (encontra x)
-  !    LUx = Pb
-  ! com
-  !    L ∈ ℝⁿˣⁿ triangular inferior unitária
-  !    U ∈ ℝⁿˣⁿ triangular superior
-  !    P ∈ ℝⁿˣⁿ matriz de permutação
-  !    x, b ∈ ℝⁿ
-  ! com orientação a colunas.
-  !    L e U são ambas guardadas em A, e no vetor p
-  ! é guardada uma representação da matriz P.
-  !    Se L e U não forem singulares, calcula x
-  ! e o guarda no vetor b, guardando também os tempos
-  ! de execução dos passos em res.
-  ! Retorna:
-  !     0: caso L e U não forem singulares e o sistema
-  !        seja resolvido com sucesso.
-  !    -1: caso contrário.
-  function sscol(n, A, p, b, res) result(status)
-           integer, intent(in)    :: n, p(:)
-              real, intent(in)    :: A(:, :)
-              real, intent(inout) :: b(:)
-    type (Results), intent(inout) :: res
-    integer :: i, status
-    real :: start, finish
-  
-    ! Calcula Pb
-    do i = 1, n
-       call swap(b(i), b(p(i)))
-    end do
+            ! Troca as linhas de forma a deixar o maior elemento
+            ! da coluna k na posição de pivô
+            if (imax /= k) then
+                do j = 1, n
+                    call swap(A(k, j), A(imax, j))
+                end do
+            end if
 
-    ! Agora temos o sistema
+            ! Calcula os multiplicadores e
+            ! reduz as linhas
+            do i = k+1, n
+                A(i, k) = A(i, k)/A(k, k)
+                do j = k+1, n
+                    A(i, j) = A(i, j) - A(k, j)*A(i, k)
+                end do
+            end do
+        end do
+
+        status = 0
+    end function lurow
+
+    ! Resolve o sistema (encontra x)
     !    LUx = Pb
+    ! com
+    !    L ∈ ℝⁿˣⁿ triangular inferior unitária
+    !    U ∈ ℝⁿˣⁿ triangular superior
+    !    P ∈ ℝⁿˣⁿ matriz de permutação
+    !    x, b ∈ ℝⁿ
+    ! com orientação a colunas.
+    !    L e U são ambas guardadas em A, e no vetor p
+    ! é guardada uma representação da matriz P.
+    !    Se L e U não forem singulares, calcula x
+    ! e o guarda no vetor b, guardando também os tempos
+    ! de execução dos passos em res.
+    ! Retorna:
+    !     0: caso L e U não forem singulares e o sistema
+    !        seja resolvido com sucesso.
+    !    -1: caso contrário.
+    function sscol(n, A, p, b, res) result(status)
+        integer,        intent(in)    :: n, p(:)
+        real,           intent(in)    :: A(:, :)
+        real,           intent(inout) :: b(:)
+        type (Results), intent(inout) :: res
 
-    ! Primeiro resolvemos
-    !    Ly = Pb
+        integer :: i, status
+        real    :: start, finish
 
-    call cpu_time(start)
-    status = forwcol(n, A, b, unit = .true.)
-    call cpu_time(finish)
-    res%tforw = finish - start
+        ! Calcula Pb
+        do i = 1, n
+            call swap(b(i), b(p(i)))
+        end do
 
-    if (status == -1) then
-       return
-    end if
+        ! Agora temos o sistema
+        !    LUx = Pb
 
-    ! Agora resolvemos
-    !    Ux = y
-    call cpu_time(start)
-    status = backcol(n, A, b, trans = .false.)
-    call cpu_time(finish)
-    res%tback = finish - start
+        ! Primeiro resolvemos
+        !    Ly = Pb
 
-    if (status == -1) then
-       return
-    end if
+        call cpu_time(start)
+        status = forwcol(n, A, b, unit = .true.)
+        call cpu_time(finish)
+        res%tforw = finish - start
 
-  end function sscol
+        if (status == -1) then
+            return
+        end if
+
+        ! Agora resolvemos
+        !    Ux = y
+        call cpu_time(start)
+        status = backcol(n, A, b, trans = .false.)
+        call cpu_time(finish)
+        res%tback = finish - start
+
+        if (status == -1) then
+            return
+        end if
+
+    end function sscol
 
 
-  ! Resolve o sistema (encontra x)
-  !    LUx = Pb
-  ! com
-  !    L ∈ ℝⁿˣⁿ triangular inferior unitária
-  !    U ∈ ℝⁿˣⁿ triangular superior
-  !    P ∈ ℝⁿˣⁿ matriz de permutação
-  !    x, b ∈ ℝⁿ
-  ! com orientação a linhas.
-  !    L e U são ambas guardadas em A, e no vetor p
-  ! é guardada uma representação da matriz P.
-  !    Se L e U não forem singulares, calcula x
-  ! e o guarda no vetor b, guardando também os tempos
-  ! de execução dos passos em res.
-  ! Retorna:
-  !     0: caso L e U não forem singulares e o sistema
-  !        seja resolvido com sucesso.
-  !    -1: caso contrário.
-  function ssrow(n, A, p, b, res) result(status)
-           integer, intent(in)    :: n, p(:)
-              real, intent(in)    :: A(:, :)
-              real, intent(inout) :: b(:)
-    type (Results), intent(inout) :: res
-    integer :: i, status
-    real :: start, finish
-  
-    ! Calcula Pb
-    do i = 1, n
-       call swap(b(i), b(p(i)))
-    end do
-
-    ! Agora temos o sistema
+    ! Resolve o sistema (encontra x)
     !    LUx = Pb
+    ! com
+    !    L ∈ ℝⁿˣⁿ triangular inferior unitária
+    !    U ∈ ℝⁿˣⁿ triangular superior
+    !    P ∈ ℝⁿˣⁿ matriz de permutação
+    !    x, b ∈ ℝⁿ
+    ! com orientação a linhas.
+    !    L e U são ambas guardadas em A, e no vetor p
+    ! é guardada uma representação da matriz P.
+    !    Se L e U não forem singulares, calcula x
+    ! e o guarda no vetor b, guardando também os tempos
+    ! de execução dos passos em res.
+    ! Retorna:
+    !     0: caso L e U não forem singulares e o sistema
+    !        seja resolvido com sucesso.
+    !    -1: caso contrário.
+    function ssrow(n, A, p, b, res) result(status)
+        integer,        intent(in)    :: n, p(:)
+        real,           intent(in)    :: A(:, :)
+        real,           intent(inout) :: b(:)
+        type (Results), intent(inout) :: res
 
-    ! Primeiro resolvemos
-    !    Ly = Pb
+        integer :: i, status
+        real    :: start, finish
 
-    call cpu_time(start)
-    status = forwrow(n, A, b, unit = .true.)
-    call cpu_time(finish)
-    res%tforw = finish - start
+        ! Calcula Pb
+        do i = 1, n
+            call swap(b(i), b(p(i)))
+        end do
 
-    if (status == -1) then
-       return
-    end if
+        ! Agora temos o sistema
+        !    LUx = Pb
 
-    ! Agora resolvemos
-    !    Ux = y
-    call cpu_time(start)
-    status = backrow(n, A, b, trans = .false.)
-    call cpu_time(finish)
-    res%tback = finish - start
+        ! Primeiro resolvemos
+        !    Ly = Pb
 
-    if (status == -1) then
-       return
-    end if
+        call cpu_time(start)
+        status = forwrow(n, A, b, unit = .true.)
+        call cpu_time(finish)
+        res%tforw = finish - start
 
-  end function ssrow
+        if (status == -1) then
+            return
+        end if
+
+        ! Agora resolvemos
+        !    Ux = y
+        call cpu_time(start)
+        status = backrow(n, A, b, trans = .false.)
+        call cpu_time(finish)
+        res%tback = finish - start
+
+        if (status == -1) then
+            return
+        end if
+
+    end function ssrow
 end module lu

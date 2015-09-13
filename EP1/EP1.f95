@@ -1,9 +1,10 @@
 program EP1
-use    utils, only: pvec, Results
-use   sol_lu, only: sol_lu_col, sol_lu_row
-use sol_chol, only: sol_chol_col, sol_chol_row
-implicit none
-    integer :: i, n
+    use    utils, only: pvec, Results
+    use   sol_lu, only: sol_lu_col,   sol_lu_row
+    use sol_chol, only: sol_chol_col, sol_chol_row
+    implicit none
+
+    integer                        :: i, n
     character(len=72), allocatable :: filenames(:)
 
     n = IARGC()
@@ -43,10 +44,13 @@ implicit none
 
 contains
   subroutine solve_systems(filenames, sol_col, sol_row, errmsg)
+    ! Dummies
     character(len=*), intent(inout) :: filenames(:)
-    character(len=*) :: errmsg
-    integer :: sol_col, sol_row
-    integer :: i, n, status
+    character(len=*), intent(in)    :: errmsg
+    integer                         :: sol_col, sol_row
+
+    ! Locais
+    integer        :: i, n, status
     type (Results) :: res
 
     ! Interface para poder utilizar as funções
@@ -94,6 +98,6 @@ contains
             print *, errmsg
         end if
     end do
-    
+
   end subroutine solve_systems
 end program EP1
