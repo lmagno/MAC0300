@@ -95,7 +95,7 @@ Embora o tempo de execução das substituições não seja visível, fica claro 
 Também é possível ver que a resolução com orientação a linhas tem performance levemente pior que a colunas, o que é esperado de uma linguagem orientada a colunas como FORTRAN.
 
 E finalmente, comparando os tempos de fatoração dos métodos de Cholesky e LU para sistemas de mesmo tamanho, repara-se que a decomposição LU é em média duas vezes mais lenta que a de Cholesky, o que é esperado uma vez que a simetria da matriz de coeficientes só pode ser explorada nesta.
-### Modo de uso
+## Modo de uso
 Dependências:
 * `gfortran`
 
