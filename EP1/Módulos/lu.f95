@@ -136,65 +136,27 @@ contains
         status = 0
     end function lurow
 
-    ! Resolve o sistema (encontra x)
-    !    LUx = Pb
-    ! com
-    !    L ∈ ℝⁿˣⁿ triangular inferior unitária
-    !    U ∈ ℝⁿˣⁿ triangular superior
-    !    P ∈ ℝⁿˣⁿ matriz de permutação
-    !    x, b ∈ ℝⁿ
-    ! com orientação a colunas.
-    !    L e U são ambas guardadas em A, e no vetor p
-    ! é guardada uma representação da matriz P.
-    !    Se L e U não forem singulares, calcula x
-    ! e o guarda no vetor b, guardando também os tempos
-    ! de execução dos passos em res.
-    ! Retorna:
-    !     0: caso L e U não forem singulares e o sistema
-    !        seja resolvido com sucesso.
-    !    -1: caso contrário.
     function sscol(n, A, p, b, res) result(status)
         integer,        intent(in)    :: n, p(:)
         real,           intent(in)    :: A(:, :)
         real,           intent(inout) :: b(:)
         type (Results), intent(inout) :: res
 
-        integer :: i, status
-        real    :: start, finish
+        integer :: status
 
-        ! Calcula Pb
-        do i = 1, n
-            call swap(b(i), b(p(i)))
-        end do
-
-        ! Agora temos o sistema
-        !    LUx = Pb
-
-        ! Primeiro resolvemos
-        !    Ly = Pb
-
-        call cpu_time(start)
-        status = forwcol(n, A, b, unit = .true.)
-        call cpu_time(finish)
-        res%tforw = finish - start
-
-        if (status == -1) then
-            return
-        end if
-
-        ! Agora resolvemos
-        !    Ux = y
-        call cpu_time(start)
-        status = backcol(n, A, b, trans = .false.)
-        call cpu_time(finish)
-        res%tback = finish - start
-
-        if (status == -1) then
-            return
-        end if
-
+        status = ss_generic(n, A, p, b, res, forwcol, backcol)
     end function sscol
 
+    function ssrow(n, A, p, b, res) result(status)
+        integer,        intent(in)    :: n, p(:)
+        real,           intent(in)    :: A(:, :)
+        real,           intent(inout) :: b(:)
+        type (Results), intent(inout) :: res
+
+        integer :: status
+
+        status = ss_generic(n, A, p, b, res, forwrow, backrow)
+    end function ssrow
 
     ! Resolve o sistema (encontra x)
     !    LUx = Pb
@@ -203,7 +165,8 @@ contains
     !    U ∈ ℝⁿˣⁿ triangular superior
     !    P ∈ ℝⁿˣⁿ matriz de permutação
     !    x, b ∈ ℝⁿ
-    ! com orientação a linhas.
+    ! com orientação dependente das funções forw
+    ! e back passadas.
     !    L e U são ambas guardadas em A, e no vetor p
     ! é guardada uma representação da matriz P.
     !    Se L e U não forem singulares, calcula x
@@ -213,14 +176,32 @@ contains
     !     0: caso L e U não forem singulares e o sistema
     !        seja resolvido com sucesso.
     !    -1: caso contrário.
-    function ssrow(n, A, p, b, res) result(status)
+    function ss_generic(n, A, p, b, res, forw, back) result(status)
         integer,        intent(in)    :: n, p(:)
         real,           intent(in)    :: A(:, :)
         real,           intent(inout) :: b(:)
         type (Results), intent(inout) :: res
+        integer                       :: forw, back
 
         integer :: i, status
         real    :: start, finish
+
+        ! Interfaces para poder usar as funções
+        interface
+            function forw(n, A, b, unit)
+                integer, intent(in)    :: n
+                real,    intent(in)    :: A(:, :)
+                real,    intent(inout) :: b(:)
+                logical, intent(in)    :: unit
+            end function forw
+
+            function back(n, A, b, trans)
+                integer, intent(in)    :: n
+                real,    intent(in)    :: A(:, :)
+                real,    intent(inout) :: b(:)
+                logical, intent(in)    :: trans
+            end function back
+        end interface
 
         ! Calcula Pb
         do i = 1, n
@@ -234,7 +215,7 @@ contains
         !    Ly = Pb
 
         call cpu_time(start)
-        status = forwrow(n, A, b, unit = .true.)
+        status = forw(n, A, b, unit = .true.)
         call cpu_time(finish)
         res%tforw = finish - start
 
@@ -245,13 +226,12 @@ contains
         ! Agora resolvemos
         !    Ux = y
         call cpu_time(start)
-        status = backrow(n, A, b, trans = .false.)
+        status = back(n, A, b, trans = .false.)
         call cpu_time(finish)
         res%tback = finish - start
 
         if (status == -1) then
             return
         end if
-
-    end function ssrow
+    end function ss_generic
 end module lu
