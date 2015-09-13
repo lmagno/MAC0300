@@ -39,9 +39,10 @@ através da eliminação gaussiana com pivotamento parcial.
 Caso não seja possível calculá-lo (ou seja, a matriz é singular), a execução é interrompida e um aviso é impresso.
 
 Isso reduz a solução do sistema nos seguintes passos:
+
 1. **PA** = **LU** Cálculo dos fatores **L** e **U**
 2. **Ly** = **Pb** *Forward substitution*
-2. **Ux** = **y** *Back substitution*
+3. **Ux** = **y** *Back substitution*
 
 _Nota: os fatores **L** e **U** são gravados sobre **A** e os vetores **x** e **y** são guardados sobre **b** por economia de memória._
 ## Comparação
