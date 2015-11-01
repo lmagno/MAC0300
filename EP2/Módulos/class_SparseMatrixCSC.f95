@@ -71,7 +71,8 @@ contains
 
         integer :: m, n, nnz
         integer :: mB, mC
-        integer :: i, j, k, v
+        integer :: i, j, k
+        real    :: v
 
         m   = this%m
         n   = this%n

@@ -3,6 +3,7 @@ module class_SparseMatrixCOO
     implicit none
     private
     public :: SparseMatrixCOO
+
     type SparseMatrixCOO
         integer :: m, n
         integer :: nnz
@@ -10,7 +11,7 @@ module class_SparseMatrixCOO
         real,    pointer :: val(:)
 
     contains
-        procedure :: print, allocate, deallocate, to_csc
+        procedure :: print, allocate, deallocate, reallocate, getindex, to_csc
     end type SparseMatrixCOO
 
 contains
@@ -52,6 +53,62 @@ contains
         deallocate(this%rowind)
         deallocate(this%val)
     end subroutine deallocate
+
+    ! Realloca a matriz para uma nova com nnz elementos não-nulos,
+    ! copiando o que for possível da matriz antiga.
+    subroutine reallocate(this, nnz)
+        class(SparseMatrixCOO), intent(inout) :: this
+        integer,                intent(in)    :: nnz
+
+        type(SparseMatrixCOO) :: C
+        integer :: k
+        call C%allocate(m = this%m, n = this%n, nnz = nnz)
+
+        do k = 1, min(nnz, this%nnz)
+            C%colind(k) = this%colind(k)
+            C%rowind(k) = this%rowind(k)
+            C%val(k)    = this%val(k)
+        end do
+
+        call this%deallocate
+        this%colind => C%colind
+        this%rowind => C%rowind
+        this%val    => C%val
+    end subroutine reallocate
+
+    ! Busca o elemento [i, j] da matriz esparsa COO this e o grava em v
+    ! caso exista.
+    ! Retorna:
+    !    -1: se o índice estiver fora dos limites da matriz
+    !     0: se for um elemento nulo da matriz
+    !     1: se for um elemento não nulo da matriz
+    function getindex(this, i, j, v) result(hasindex)
+        class(SparseMatrixCOO), intent(in)  :: this
+        integer,                intent(in)  :: i, j
+        real,                   intent(out) :: v
+
+        integer :: hasindex
+        integer :: k
+
+        v = 0.0
+        if (i > this%m .or. j > this%n) then
+            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', this%m, this%n, i, j
+            hasindex = -1
+            return
+        end if
+
+        k = 1
+        do while (this%colind(k) <= j .and. this%rowind(k) < i)
+            k = k + 1
+        end do
+
+        if (this%colind(k) == j .and. this%rowind(k) == i) then
+            hasindex = 1
+            v = this%val(k)
+        else
+            hasindex = 0
+        end if
+    end function
 
     ! Cria uma matriz esparsa no formato CSC a partir de uma
     ! no formato COO
