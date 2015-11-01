@@ -10,7 +10,7 @@ module class_SparseMatrixCSC
         integer, pointer :: colptr(:), rowval(:)
         real,    pointer :: nzval(:)
     contains
-        procedure :: print, allocate, deallocate
+        procedure :: print, allocate, deallocate, times
     end type SparseMatrixCSC
 
 contains
@@ -58,6 +58,53 @@ contains
         deallocate(this%rowval)
         deallocate(this%nzval)
     end subroutine deallocate
+
+    ! Realiza a multiplicação this*B, onde this é uma matriz esparsa m×n e
+    ! B é um vetor denso, gravando o resultado no vetor denso C,
+    ! com eficiência O(n).
+    ! Também verifica se as dimensões são compatíveis e imprime uma mensagem
+    ! caso contrário.
+    subroutine times(this, B, C)
+        class(SparseMatrixCSC), intent(in)  :: this
+        real,                   intent(in)  :: B(:)
+        real,                   intent(out) :: C(:)
+
+        integer :: m, n, nnz
+        integer :: mB, mC
+        integer :: i, j, k, v
+
+        m   = this%m
+        n   = this%n
+        nnz = this%nnz
+
+        mB = size(B)
+        mC = size(C)
+
+        ! Verifica se as dimensões são compatíveis
+        if (n /= mB) then
+            print '("Dimensões incompatíveis no produto: ", i0, "×", i0, " * ", i0, "×", i0, " →  ", i0, "×", i0)', &
+                    m, n, mB, 1, mC, 1
+            return
+        else if (m /= mC) then
+            print '("Dimensões incompatíveis na atribuição: ", i0, "×", i0, " * ", i0, "×", i0, " →  ", i0, "×", i0)', &
+                    m, n, mB, 1, mC, 1
+            return
+        end if
+
+        ! Inicializa o vetor C
+        do i = 1, mC
+            C(i) = 0.0
+        end do
+
+        do j = 1, n
+            do k = this%colptr(j), this%colptr(j + 1) - 1
+                i = this%rowval(k)
+                v = this%nzval(k)
+
+                C(i) = C(i) + v*B(j)
+            end do
+        end do
+    end subroutine times
 
 end module class_SparseMatrixCSC
 
@@ -160,43 +207,33 @@ program test
     integer :: i
 
     type(SparseMatrixCSC) :: A
-    type(SparseMatrixCOO) :: B
+    type(SparseMatrixCOO) :: tmp
+    real :: B(7), C(5)
+    !
+    ! call tmp%allocate(m = 4, n = 4, nnz = 4)
+    ! tmp%colind = [1, 2, 2, 3]
+    ! tmp%rowind = [2, 2, 4, 3]
+    ! tmp%val    = [5, 8, 6, 3]
+    !
+    ! call tmp%print
+    !
+    ! A = tmp%to_csc()
+    ! call A%print
+    !
+    ! call A%deallocate
+    ! call tmp%deallocate
 
-    call B%allocate(m = 4, n = 4, nnz = 4)
-    B%colind = [1, 2, 2, 3]
-    B%rowind = [2, 2, 4, 3]
-    B%val    = [5, 8, 6, 3]
+    call tmp%allocate(m = 5, n = 7, nnz = 9)
+    tmp%colind = [1,   2,  2,  3,  3,  4,  5,  6,  7]
+    tmp%rowind = [1,   1,  2,  2,  3,  3,  3,  4,  5]
+    tmp%val    = [11, 22, 33, 44, 55, 66, 77, 88, 99]
 
-    call B%print
-
-    A = B%to_csc()
+    A = tmp%to_csc()
     call A%print
+    call tmp%deallocate
 
+    B = [1, 1, 1, 1, 1, 1, 1]
+    call A%times(B, C)
+    print *, C
     call A%deallocate
-    call B%deallocate
-
-    call B%allocate(m = 5, n = 7, nnz = 9)
-    B%colind = [1,   2,  2,  3,  3,  4,  5,  6,  7]
-    B%rowind = [1,   1,  2,  2,  3,  3,  3,  4,  5]
-    B%val    = [11, 22, 33, 44, 55, 66, 77, 88, 99]
-
-    call B%print
-
-    A = B%to_csc()
-    call A%print
-
-    call A%deallocate
-    call B%deallocate
-
-    call B%allocate(m = 10, n = 1, nnz = 2)
-    B%colind = [1,  1]
-    B%rowind = [1, 10]
-    B%val    = [1,  1]
-
-    call B%print
-    A = B%to_csc()
-    call A%print
-    call A%deallocate
-    call B%deallocate
-
 end program test
