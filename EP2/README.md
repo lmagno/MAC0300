@@ -54,13 +54,13 @@ para um formato mais adequado.
 #### Compressed Sparse Column (CSC)
 Mais complexo do que o formato COO, o CSC é composto principalmente por três vetores
 
-* **nzval**: contém os valores de todos os elementos não-nulos, ordenados por
+* `nzval`: contém os valores de todos os elementos não-nulos, ordenados por
 coluna e então por linha
-* **rowval**: contém os valores dos índices de linha de cada elemento correspondente em **nzval**
-* **colptr**: contém os índices de **nzval** em que se encontram os primeiros elementos de cada coluna da matriz. Por exemplo, `nzval(colptr(j))` representa
+* `rowval`: contém os valores dos índices de linha de cada elemento correspondente em `nzval`
+* `colptr`: contém os índices de `nzval` em que se encontram os primeiros elementos de cada coluna da matriz. Por exemplo, `nzval(colptr(j))` representa
 o valor do primeiro elemento da coluna `j` na matriz.
 
-Vale notar que **nzval** e **rowval** são obtidos diretamente a partir de uma matriz no formato COO, sendo necessário apenas o cálculo de **colptr**.
+Vale notar que `nzval` e `rowval` são obtidos diretamente a partir de uma matriz no formato COO, sendo necessário apenas o cálculo de `colptr`.
 A vantagem de se utilizar este formato está na facilidade de se obter uma coluna da matriz (a coluna `j` são os elementos em `nzval` entre `colptr(j)` e `colptr(j+1)-1`), o que torna barato o produto matriz-vetor orientado a colunas.
 
 ### Gradientes Conjugados
