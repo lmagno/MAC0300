@@ -210,11 +210,18 @@ contains
         ! Itera a lista até achar a posição em que o elemento [i, j]
         ! deveria estar
         next => current%next
-        do while (associated(next) .and. next%j <= j .and. next%i <= i)
+        do while (associated(next) .and. next%j < j)
             current => next
             next    => next%next
         end do
 
+        do while(associated(next) .and. next%j == j .and. next%i <= i)
+            current => next
+            next    => next%next
+        end do
+
+        ! Verifica se o elemento já existe na lista e altera seu valor
+        ! ou insere um novo elemento nesta posição
         if (current%j == j .and. current%i == i) then
             current%v = v
             hasindex = 1
