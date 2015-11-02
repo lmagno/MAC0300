@@ -22,7 +22,7 @@ module class_SparseMatrixCOO
         procedure :: init, print, summary, &
                      allocate, deallocate, &
                      getindex, setindex, &
-                     to_csc
+                     to_csc, full
     end type SparseMatrixCOO
 
 contains
@@ -63,6 +63,22 @@ contains
 
         print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos.")', self%m, self%n, self%nnz
     end subroutine summary
+
+    ! Grava a matriz esparsa como densa em A
+    subroutine full(self, A)
+        class(SparseMatrixCOO), intent(in)  :: self
+        real,                   intent(out) :: A(:, :)
+
+        type(sp_t), pointer :: current
+
+        A(:, :) = 0.0
+        current => self%first
+        do while (associated(current))
+            A(current%i, current%j) = current%v
+
+            current => current%next
+        end do
+    end subroutine full
 
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato COO
     subroutine allocate(self, m, n, nnz, colind, rowind, val)
