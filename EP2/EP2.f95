@@ -7,7 +7,7 @@ program EP2
     type(res_t)       :: res
     integer           :: argc
     character(len=32) :: argv
-
+    real              :: tau
 
     argc = IARGC()
     if (argc > 0) then
@@ -19,13 +19,14 @@ program EP2
     cg_only = .false.
     print '(A5, 7A10)', "n", "sprand", "to_csc", "CG", "full", "Cholesky", "diff", "posdef"
 
+    tau = 0.1
     do i = 1, max
         n = 2**i
 
         if (cg_only) then
-            res = ex_cg(n)
+            res = ex_cg(n, tau)
         else
-            res = ex_cg_chol(n)
+            res = ex_cg_chol(n, tau)
         end if
 
         call res%print

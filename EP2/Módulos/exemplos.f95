@@ -2,7 +2,7 @@ module exemplos
     use class_SparseMatrixCSC
     use class_SparseMatrixCOO
     use RandomSparseMatrix
-    use CG
+    use CG,       only: solve_cg
     use cholesky, only: cholcol
     use trisys,   only: forwcol, backcol
     implicit none
@@ -51,16 +51,20 @@ contains
     ! Gera um sistema aleatório com matriz de coeficientes n×n esparsa
     ! e o resolve usando o método de gradientes conjugados,
     ! retornando os tempos de cada passo da resolução
-    function ex_cg(n) result(res)
-        integer, intent(in) :: n
+    function ex_cg(n, tau) result(res)
+        integer, intent(in)  :: n
+        real,    intent(out) :: tau
 
         type(SparseMatrixCSC) :: A_cg
         type(SparseMatrixCOO) :: tmp
         real, allocatable :: b(:), x_cg(:)
+
         integer*8 :: start, finish, cr, cm
+        character(len=32) :: filename
         real :: rate
         type(res_t) :: res
 
+        write(filename, '(i0, "_", f4.2)'), n, tau
         call system_clock(count_rate = cr, count_max = cm)
         rate = real(cr)
         call random_seed()
@@ -72,7 +76,7 @@ contains
 
         ! Gera a matriz aleatória
         call system_clock(start)
-        tmp = sprand(n, 0.01)
+        tmp = sprand(n, tau)
         call system_clock(finish)
 
         res%sprand = (finish-start)/rate
@@ -88,7 +92,7 @@ contains
 
         ! Resolve por gradientes conjugados
         call system_clock(start)
-        call solve(A_cg, b, x_cg)
+        call solve_cg(A_cg, b, x_cg, filename)
         call system_clock(finish)
         res%CG = (finish-start)/rate
 
@@ -103,16 +107,20 @@ contains
     ! e o resolve usando o método de gradientes conjugados e por Cholesky,
     ! retornando os tempos de cada passo, a diferença entre os resultados
     ! obtidos por cada método e se a matriz era definida positiva mesmo.
-    function ex_cg_chol(n) result(res)
-        integer, intent(in) :: n
+    function ex_cg_chol(n, tau) result(res)
+        integer, intent(in)  :: n
+        real,    intent(out) :: tau
 
         type(SparseMatrixCSC) :: A_cg
         type(SparseMatrixCOO) :: tmp
         real, allocatable :: b(:), x_chol(:), x_cg(:), A_chol(:, :)
+
+        character(len=32) :: filename
         integer*8 :: start, finish, cr, cm
         real :: rate
         type(res_t) :: res
 
+        write(filename, '(i0, "_", f4.2)'), n, tau
         call system_clock(count_rate = cr, count_max = cm)
         rate = real(cr)
         call random_seed()
@@ -126,7 +134,7 @@ contains
 
         ! Gera a matriz aleatória
         call system_clock(start)
-        tmp = sprand(n, 0.01)
+        tmp = sprand(n, tau)
         call system_clock(finish)
 
         res%sprand = (finish-start)/rate
@@ -143,7 +151,7 @@ contains
 
         ! Resolve por gradientes conjugados
         call system_clock(start)
-        call solve(A_cg, b, x_cg)
+        call solve_cg(A_cg, b, x_cg, filename)
         call system_clock(finish)
         res%CG = (finish-start)/rate
 
