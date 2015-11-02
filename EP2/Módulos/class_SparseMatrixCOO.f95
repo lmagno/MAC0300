@@ -15,12 +15,23 @@ module class_SparseMatrixCOO
     type SparseMatrixCOO
         integer    :: m, n
         integer    :: nnz
-        type(sp_t), pointer :: data
+        type(sp_t), pointer :: first => null()
     contains
-        procedure :: print, allocate, deallocate, getindex, to_csc
+        procedure :: init, print, allocate, deallocate, getindex, setindex, to_csc
     end type SparseMatrixCOO
 
 contains
+
+    ! Inicializa uma matriz vazia
+    subroutine init(this, m, n)
+        class(SparseMatrixCOO), intent(inout) :: this
+        integer,                intent(in)    :: m, n
+
+        this%m   = m
+        this%n   = n
+        this%nnz = 0
+    end subroutine init
+    
     ! Imprime os elementos não nulos da matriz para tela
     subroutine print(this)
         class(SparseMatrixCOO) :: this
@@ -29,7 +40,7 @@ contains
         type(sp_t), pointer :: current
 
         print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos: ")', this%m, this%n, this%nnz
-        current => this%data
+        current => this%first
         do while (associated(current))
             i = current%i
             j = current%j
@@ -56,8 +67,8 @@ contains
         this%nnz = nnz
 
         ! Aloca e grava o primeiro elemento
-        allocate(this%data)
-        current => this%data
+        allocate(this%first)
+        current => this%first
 
         current%j = colind(1)
         current%i = rowind(1)
@@ -83,7 +94,7 @@ contains
         class(SparseMatrixCOO) :: this
         type(sp_t), pointer    :: current, next
 
-        current => this%data
+        current => this%first
         do while (associated(current))
             next => current%next
 
@@ -115,8 +126,14 @@ contains
             return
         end if
 
-        current => this%data
-        do while (current%j <= j .and. current%i < i)
+        current => this%first
+
+        if (.not. associated(current)) then
+            hasindex = 0
+            return
+        end if
+
+        do while (associated(current%next) .and. current%j <= j .and. current%i < i)
             current => current%next
         end do
 
@@ -128,6 +145,56 @@ contains
         end if
     end function
 
+    function setindex(this, i, j, v) result(hasindex)
+        class(SparseMatrixCOO), intent(inout) :: this
+        integer,                intent(in)    :: i, j
+        real,                   intent(in)    :: v
+
+        integer :: hasindex
+        type(sp_t), pointer :: current, next
+
+        if (i > this%m .or. j > this%n) then
+            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', this%m, this%n, i, j
+            hasindex = -1
+            return
+        end if
+
+        current => this%first
+        ! Se a matriz não tiver nenhum elemento não nulo,
+        ! grava na primeira posição
+        if (.not. associated(current)) then
+            allocate(next)
+            next%i = i
+            next%j = j
+            next%v = v
+
+            this%first => next
+            this%nnz = this%nnz + 1
+            hasindex = 0
+            return
+        end if
+
+        ! Itera a lista até achar a posição em que o elemento [i, j]
+        ! deveria estar
+        do while (associated(current%next) .and. current%j <= j .and. current%i < i)
+            current => current%next
+        end do
+
+        if (current%j == j .and. current%i == i) then
+            current%v = v
+            hasindex = 1
+        else
+            allocate(next)
+            next%i = i
+            next%j = j
+            next%v = v
+
+            this%nnz = this%nnz + 1
+            next%next => current%next
+            current%next => next
+            hasindex = 0
+        end if
+    end function setindex
     ! Cria uma matriz esparsa no formato CSC a partir de uma
     ! no formato COO
     function to_csc(this) result(csc)
@@ -144,20 +211,19 @@ contains
 
         call csc%allocate(m, n, nnz)
 
-
-        current => this%data
+        current => this%first
         jold = 1
         csc%colptr(1) = 1
         do k = 1, nnz
             jnew = current%j
             if (jnew /= jold) then
-                do j = jold+1, jnew-1
-                    csc%colptr(j) = csc%colptr(jold)
+                do j = jold+1, jnew
+                    csc%colptr(j) = k
                 end do
 
-                csc%colptr(jnew) = k
+                jold = jnew
             end if
-            jold = jnew
+
             csc%rowval(k) = current%i
             csc%nzval(k)  = current%v
             current => current%next
