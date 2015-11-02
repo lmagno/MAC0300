@@ -21,14 +21,18 @@ program EP2
     ! call A%deallocate
     ! call tmp%deallocate
 
-    call tmp%allocate(m = 5, n = 7, nnz = 9)
-    tmp%colind = [1,   2,  2,  3,  3,  4,  5,  6,  7]
-    tmp%rowind = [1,   1,  2,  2,  3,  3,  3,  4,  5]
-    tmp%val    = [11, 22, 33, 44, 55, 66, 77, 88, 99]
+    call tmp%allocate(m = 5, n = 7, nnz = 9, &
+                      colind = [1,   2,  2,  3,  3,  4,  5,  6,  7], &
+                      rowind = [1,   1,  2,  2,  3,  3,  3,  4,  5], &
+                      val    = real([11, 22, 33, 44, 55, 66, 77, 88, 99]))
 
-    call tmp%reallocate(10)
     call tmp%print
-    print *, tmp%val
+    print *, tmp%getindex(5, 8, v)
+    print *, v
+    A = tmp%to_csc()
+    call A%print
+    call tmp%deallocate
+    ! print *, tmp%val
     ! print *, tmp%getindex(5, 7, v)
     ! A = tmp%to_csc()
     ! call A%print

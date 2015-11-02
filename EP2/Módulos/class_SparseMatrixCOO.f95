@@ -4,77 +4,95 @@ module class_SparseMatrixCOO
     private
     public :: SparseMatrixCOO
 
-    type SparseMatrixCOO
-        integer :: m, n
-        integer :: nnz
-        integer, pointer :: colind(:), rowind(:)
-        real,    pointer :: val(:)
 
+    type sp_t
+        integer :: i, j
+        real    :: v
+
+        type(sp_t), pointer :: next => null()
+    end type sp_t
+
+    type SparseMatrixCOO
+        integer    :: m, n
+        integer    :: nnz
+        type(sp_t), pointer :: data
     contains
-        procedure :: print, allocate, deallocate, reallocate, getindex, to_csc
+        procedure :: print, allocate, deallocate, getindex, to_csc
     end type SparseMatrixCOO
 
 contains
     ! Imprime os elementos não nulos da matriz para tela
     subroutine print(this)
         class(SparseMatrixCOO) :: this
-        integer :: i, j, k
+        integer :: i, j
         real    :: v
+        type(sp_t), pointer :: current
 
         print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos: ")', this%m, this%n, this%nnz
-        do k = 1, this%nnz
-            i = this%rowind(k)
-            j = this%colind(k)
-            v = this%val(k)
+        current => this%data
+        do while (associated(current))
+            i = current%i
+            j = current%j
+            v = current%v
 
             print '(4x, "[", i0, ", ", i0, "] = ", f10.6)', i, j, v
+            current => current%next
         end do
         print *, ''
     end subroutine print
 
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato COO
-    subroutine allocate(this, m, n, nnz)
+    subroutine allocate(this, m, n, nnz, colind, rowind, val)
         class(SparseMatrixCOO), intent(inout) :: this
         integer,                intent(in)    :: m, n, nnz
+        integer,                intent(in)    :: colind(:), rowind(:)
+        real,                   intent(in)    :: val(:)
+
+        integer :: k
+        type(sp_t), pointer :: current, next
 
         this%m = m
         this%n = n
         this%nnz = nnz
-        allocate(this%colind(nnz))
-        allocate(this%rowind(nnz))
-        allocate(this%val(nnz))
+
+        ! Aloca e grava o primeiro elemento
+        allocate(this%data)
+        current => this%data
+
+        current%j = colind(1)
+        current%i = rowind(1)
+        current%v = val(1)
+
+        do k = 2, nnz
+            ! Aloca e grava o próximo elemento
+            allocate(next)
+
+            next%j = colind(k)
+            next%i = rowind(k)
+            next%v = val(k)
+
+            ! Adiciona o elemento no final da lista e
+            ! move para ele
+            current%next => next
+            current      => next
+        end do
     end subroutine allocate
 
     ! Desaloca uma matriz esparsa no formato COO
     subroutine deallocate(this)
         class(SparseMatrixCOO) :: this
+        type(sp_t), pointer    :: current, next
 
-        deallocate(this%colind)
-        deallocate(this%rowind)
-        deallocate(this%val)
-    end subroutine deallocate
+        current => this%data
+        do while (associated(current))
+            next => current%next
 
-    ! Realloca a matriz para uma nova com nnz elementos não-nulos,
-    ! copiando o que for possível da matriz antiga.
-    subroutine reallocate(this, nnz)
-        class(SparseMatrixCOO), intent(inout) :: this
-        integer,                intent(in)    :: nnz
+            deallocate(current)
+            nullify(current)
 
-        type(SparseMatrixCOO) :: C
-        integer :: k
-        call C%allocate(m = this%m, n = this%n, nnz = nnz)
-
-        do k = 1, min(nnz, this%nnz)
-            C%colind(k) = this%colind(k)
-            C%rowind(k) = this%rowind(k)
-            C%val(k)    = this%val(k)
+            current => next
         end do
-
-        call this%deallocate
-        this%colind => C%colind
-        this%rowind => C%rowind
-        this%val    => C%val
-    end subroutine reallocate
+    end subroutine deallocate
 
     ! Busca o elemento [i, j] da matriz esparsa COO this e o grava em v
     ! caso exista.
@@ -88,7 +106,7 @@ contains
         real,                   intent(out) :: v
 
         integer :: hasindex
-        integer :: k
+        type(sp_t), pointer :: current
 
         v = 0.0
         if (i > this%m .or. j > this%n) then
@@ -97,14 +115,14 @@ contains
             return
         end if
 
-        k = 1
-        do while (this%colind(k) <= j .and. this%rowind(k) < i)
-            k = k + 1
+        current => this%data
+        do while (current%j <= j .and. current%i < i)
+            current => current%next
         end do
 
-        if (this%colind(k) == j .and. this%rowind(k) == i) then
+        if (current%j == j .and. current%i == i) then
             hasindex = 1
-            v = this%val(k)
+            v = current%v
         else
             hasindex = 0
         end if
@@ -115,22 +133,23 @@ contains
     function to_csc(this) result(csc)
         class(SparseMatrixCOO) :: this
         type(SparseMatrixCSC)  :: csc
+
         integer :: m, n, nnz
         integer :: j, k, jold, jnew
+        type(sp_t), pointer :: current
 
         m   = this%m
         n   = this%n
         nnz = this%nnz
 
         call csc%allocate(m, n, nnz)
-        csc%rowval = this%rowind
-        csc%nzval  = this%val
 
-        csc%colptr(1) = 1
 
+        current => this%data
         jold = 1
+        csc%colptr(1) = 1
         do k = 1, nnz
-            jnew = this%colind(k)
+            jnew = current%j
             if (jnew /= jold) then
                 do j = jold+1, jnew-1
                     csc%colptr(j) = csc%colptr(jold)
@@ -139,10 +158,13 @@ contains
                 csc%colptr(jnew) = k
             end if
             jold = jnew
+            csc%rowval(k) = current%i
+            csc%nzval(k)  = current%v
+            current => current%next
         end do
 
         do j = jold+1, n+1
             csc%colptr(j) = nnz+1
         end do
     end function to_csc
-end module class_SparseMatrixCOO
+ end module class_SparseMatrixCOO
