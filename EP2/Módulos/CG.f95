@@ -4,6 +4,12 @@ module CG
     private
     public :: solve
 contains
+    ! Resolve um sistema linear Ax = b com
+    !     A: matriz n×n esparsa e definida positiva
+    !     x: vetor de tamanho n denso
+    !     b: vetor de tamanho n denso
+    ! usando o método dos gradientes conjugados,
+    ! guardando o resultado em x.
     subroutine solve(A, b, x)
         type(SparseMatrixCSC), intent(in)  :: A
         real,                  intent(in)  :: b(:)
@@ -21,7 +27,7 @@ contains
 
         ! Inicializa x
         x(:) = 0.0
-        
+
         ! r = b - A*x
         call A%times(x, r)
         r = b - r
