@@ -3,10 +3,10 @@ SOURCE = $(NAME).f95
 OUTPUT = $(NAME).out
 
 MODDIR = ./Módulos/
-MODULES = class_SparseMatrixCSC class_SparseMatrixCOO RandomSparseMatrix CG
+MODULES = class_SparseMatrixCSC class_SparseMatrixCOO RandomSparseMatrix CG exemplos
 MODFILES = $(addprefix $(MODDIR), $(MODULES:=.f95))
 MODFILES += ../EP1/Módulos/cholesky.f95 ../EP1/Módulos/trisys.f95 # Usar módulos do EP1
-FFLAGS = -Wall -fdefault-real-8 -g3 -Wimplicit-interface # Usar double como default
+FFLAGS = -p -Wall -fdefault-real-8 -g3 -Wimplicit-interface # Usar double como default
 
 .PHONY: all clean
 

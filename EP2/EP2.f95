@@ -1,27 +1,34 @@
 program EP2
-    use class_SparseMatrixCSC
-    use class_SparseMatrixCOO
-    use RandomSparseMatrix
-    use CG
+    use exemplos, only: res_t, ex_cg_chol, ex_cg
     implicit none
 
-    type(SparseMatrixCSC) :: A
-    type(SparseMatrixCOO) :: tmp
-    integer :: hasindex, i, j
-    real :: v, w
-    real :: b(2), x(2)
+    integer           :: i, n, max
+    logical           :: cg_only
+    type(res_t)       :: res
+    integer           :: argc
+    character(len=32) :: argv
 
-    call tmp%init(2, 2)
-    hasindex = tmp%setindex(1, 1, 4.0)
-    hasindex = tmp%setindex(1, 2, 1.0)
-    hasindex = tmp%setindex(2, 1, 1.0)
-    hasindex = tmp%setindex(2, 2, 3.0)
 
-    A = tmp%to_csc()
-    call A%print
+    argc = IARGC()
+    if (argc > 0) then
+        call get_command_argument(1, argv)
+        read (argv, *) max
+    else
+        max = 12
+    end if
+    cg_only = .false.
+    print '(A5, 7A10)', "n", "sprand", "to_csc", "CG", "full", "Cholesky", "diff", "posdef"
 
-    b = [1, 2]
-    call solve(A, b, x)
-    print *, x
-    call tmp%deallocate
+    do i = 1, max
+        n = 2**i
+
+        if (cg_only) then
+            res = ex_cg(n)
+        else
+            res = ex_cg_chol(n)
+        end if
+
+        call res%print
+        if (res%total() > 100) cg_only = .true.
+    end do
 end program EP2
