@@ -49,6 +49,7 @@ program EP2
     A = tmp%to_csc()
     call A%summary
     call tmp%deallocate
+    call A%deallocate
     ! print *, tmp%val
     ! print *, tmp%getindex(5, 7, v)
     ! A = tmp%to_csc()
@@ -58,5 +59,4 @@ program EP2
     ! B = [1, 1, 1, 1, 1, 1, 1]
     ! call A%times(B, C)
     ! print *, C
-    ! call A%deallocate
 end program EP2

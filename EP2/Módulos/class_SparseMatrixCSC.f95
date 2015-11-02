@@ -15,21 +15,21 @@ module class_SparseMatrixCSC
 
 contains
     ! Imprime os elementos não nulos da matriz para tela
-    subroutine print(this)
-        class(SparseMatrixCSC) :: this
+    subroutine print(self)
+        class(SparseMatrixCSC) :: self
         integer :: m, n, nnz
         integer :: i, j, k
         real    :: v
 
-        m   = this%m
-        n   = this%n
-        nnz = this%nnz
+        m   = self%m
+        n   = self%n
+        nnz = self%nnz
 
         print '("Matriz esparsa CSC ", i0, "x", i0, " com ", i0, " valores não nulos: ")', m, n, nnz
         do j = 1, n
-            do k = this%colptr(j), this%colptr(j + 1) - 1
-                i = this%rowval(k)
-                v = this%nzval(k)
+            do k = self%colptr(j), self%colptr(j + 1) - 1
+                i = self%rowval(k)
+                v = self%nzval(k)
 
                 print '(4x, "[", i0, ", ", i0, "] = ", f10.6)', i, j, v
             end do
@@ -38,41 +38,41 @@ contains
     end subroutine print
 
     ! Similar ao print, mas não imprime os elementos em si.
-    subroutine summary(this)
-        class(SparseMatrixCSC), intent(in) :: this
+    subroutine summary(self)
+        class(SparseMatrixCSC), intent(in) :: self
 
-        print '("Matriz esparsa CSC ", i0, "x", i0, " com ", i0, " valores não nulos.")', this%m, this%n, this%nnz
+        print '("Matriz esparsa CSC ", i0, "x", i0, " com ", i0, " valores não nulos.")', self%m, self%n, self%nnz
     end subroutine summary
 
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato CSC
-    subroutine allocate(this, m, n, nnz)
-        class(SparseMatrixCSC), intent(inout) :: this
+    subroutine allocate(self, m, n, nnz)
+        class(SparseMatrixCSC), intent(inout) :: self
         integer,                intent(in)    :: m, n, nnz
 
-        this%m   = m
-        this%n   = n
-        this%nnz = nnz
-        allocate(this%colptr(n+1))
-        allocate(this%rowval(nnz))
-        allocate(this%nzval(nnz))
+        self%m   = m
+        self%n   = n
+        self%nnz = nnz
+        allocate(self%colptr(n+1))
+        allocate(self%rowval(nnz))
+        allocate(self%nzval(nnz))
     end subroutine allocate
 
     ! Desaloca uma matriz esparsa no formato CSC
-    subroutine deallocate(this)
-        class(SparseMatrixCSC) :: this
+    subroutine deallocate(self)
+        class(SparseMatrixCSC) :: self
 
-        deallocate(this%colptr)
-        deallocate(this%rowval)
-        deallocate(this%nzval)
+        deallocate(self%colptr)
+        deallocate(self%rowval)
+        deallocate(self%nzval)
     end subroutine deallocate
 
-    ! Realiza a multiplicação this*B, onde this é uma matriz esparsa m×n e
+    ! Realiza a multiplicação self*B, onde self é uma matriz esparsa m×n e
     ! B é um vetor denso, gravando o resultado no vetor denso C,
     ! com eficiência O(n).
     ! Também verifica se as dimensões são compatíveis e imprime uma mensagem
     ! caso contrário.
-    subroutine times(this, B, C)
-        class(SparseMatrixCSC), intent(in)  :: this
+    subroutine times(self, B, C)
+        class(SparseMatrixCSC), intent(in)  :: self
         real,                   intent(in)  :: B(:)
         real,                   intent(out) :: C(:)
 
@@ -81,9 +81,9 @@ contains
         integer :: i, j, k
         real    :: v
 
-        m   = this%m
-        n   = this%n
-        nnz = this%nnz
+        m   = self%m
+        n   = self%n
+        nnz = self%nnz
 
         mB = size(B)
         mC = size(C)
@@ -105,9 +105,9 @@ contains
         end do
 
         do j = 1, n
-            do k = this%colptr(j), this%colptr(j + 1) - 1
-                i = this%rowval(k)
-                v = this%nzval(k)
+            do k = self%colptr(j), self%colptr(j + 1) - 1
+                i = self%rowval(k)
+                v = self%nzval(k)
 
                 C(i) = C(i) + v*B(j)
             end do

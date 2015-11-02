@@ -26,24 +26,24 @@ module class_SparseMatrixCOO
 contains
 
     ! Inicializa uma matriz vazia
-    subroutine init(this, m, n)
-        class(SparseMatrixCOO), intent(inout) :: this
+    subroutine init(self, m, n)
+        class(SparseMatrixCOO), intent(inout) :: self
         integer,                intent(in)    :: m, n
 
-        this%m   = m
-        this%n   = n
-        this%nnz = 0
+        self%m   = m
+        self%n   = n
+        self%nnz = 0
     end subroutine init
 
     ! Imprime os elementos não nulos da matriz para tela
-    subroutine print(this)
-        class(SparseMatrixCOO) :: this
+    subroutine print(self)
+        class(SparseMatrixCOO) :: self
         integer :: i, j
         real    :: v
         type(sp_t), pointer :: current
 
-        print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos: ")', this%m, this%n, this%nnz
-        current => this%first
+        print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos: ")', self%m, self%n, self%nnz
+        current => self%first
         do while (associated(current))
             i = current%i
             j = current%j
@@ -56,15 +56,15 @@ contains
     end subroutine print
 
     ! Similar ao print, mas não imprime os elementos em si.
-    subroutine summary(this)
-        class(SparseMatrixCOO), intent(in) :: this
+    subroutine summary(self)
+        class(SparseMatrixCOO), intent(in) :: self
 
-        print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos.")', this%m, this%n, this%nnz
+        print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos.")', self%m, self%n, self%nnz
     end subroutine summary
 
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato COO
-    subroutine allocate(this, m, n, nnz, colind, rowind, val)
-        class(SparseMatrixCOO), intent(inout) :: this
+    subroutine allocate(self, m, n, nnz, colind, rowind, val)
+        class(SparseMatrixCOO), intent(inout) :: self
         integer,                intent(in)    :: m, n, nnz
         integer,                intent(in)    :: colind(:), rowind(:)
         real,                   intent(in)    :: val(:)
@@ -72,13 +72,13 @@ contains
         integer :: k
         type(sp_t), pointer :: current, next
 
-        this%m = m
-        this%n = n
-        this%nnz = nnz
+        self%m = m
+        self%n = n
+        self%nnz = nnz
 
         ! Aloca e grava o primeiro elemento
-        allocate(this%first)
-        current => this%first
+        allocate(self%first)
+        current => self%first
 
         current%j = colind(1)
         current%i = rowind(1)
@@ -100,11 +100,11 @@ contains
     end subroutine allocate
 
     ! Desaloca uma matriz esparsa no formato COO
-    subroutine deallocate(this)
-        class(SparseMatrixCOO) :: this
+    subroutine deallocate(self)
+        class(SparseMatrixCOO) :: self
         type(sp_t), pointer    :: current, next
 
-        current => this%first
+        current => self%first
         do while (associated(current))
             next => current%next
 
@@ -115,14 +115,14 @@ contains
         end do
     end subroutine deallocate
 
-    ! Busca o elemento [i, j] da matriz esparsa COO this e o grava em v
+    ! Busca o elemento [i, j] da matriz esparsa COO self e o grava em v
     ! caso exista.
     ! Retorna:
     !    -1: se o índice estiver fora dos limites da matriz
     !     0: se for um elemento nulo da matriz
     !     1: se for um elemento não nulo da matriz
-    function getindex(this, i, j, v) result(hasindex)
-        class(SparseMatrixCOO), intent(in)  :: this
+    function getindex(self, i, j, v) result(hasindex)
+        class(SparseMatrixCOO), intent(in)  :: self
         integer,                intent(in)  :: i, j
         real,                   intent(out) :: v
 
@@ -130,13 +130,13 @@ contains
         type(sp_t), pointer :: current
 
         v = 0.0
-        if (i > this%m .or. j > this%n) then
-            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', this%m, this%n, i, j
+        if (i > self%m .or. j > self%n) then
+            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', self%m, self%n, i, j
             hasindex = -1
             return
         end if
 
-        current => this%first
+        current => self%first
 
         if (.not. associated(current)) then
             hasindex = 0
@@ -155,21 +155,21 @@ contains
         end if
     end function
 
-    function setindex(this, i, j, v) result(hasindex)
-        class(SparseMatrixCOO), intent(inout) :: this
+    function setindex(self, i, j, v) result(hasindex)
+        class(SparseMatrixCOO), intent(inout) :: self
         integer,                intent(in)    :: i, j
         real,                   intent(in)    :: v
 
         integer :: hasindex
         type(sp_t), pointer :: current, next
 
-        if (i > this%m .or. j > this%n) then
-            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', this%m, this%n, i, j
+        if (i > self%m .or. j > self%n) then
+            print '("ERRO: a matriz ", i0, "×", i0, " não contém o elemento [", i0, ", ", i0, "]")', self%m, self%n, i, j
             hasindex = -1
             return
         end if
 
-        current => this%first
+        current => self%first
         ! Se a matriz não tiver nenhum elemento não nulo,
         ! grava na primeira posição
         if (.not. associated(current)) then
@@ -178,8 +178,8 @@ contains
             next%j = j
             next%v = v
 
-            this%first => next
-            this%nnz = this%nnz + 1
+            self%first => next
+            self%nnz = self%nnz + 1
             hasindex = 0
             return
         end if
@@ -199,7 +199,7 @@ contains
             next%j = j
             next%v = v
 
-            this%nnz = this%nnz + 1
+            self%nnz = self%nnz + 1
             next%next => current%next
             current%next => next
             hasindex = 0
@@ -207,21 +207,21 @@ contains
     end function setindex
     ! Cria uma matriz esparsa no formato CSC a partir de uma
     ! no formato COO
-    function to_csc(this) result(csc)
-        class(SparseMatrixCOO) :: this
+    function to_csc(self) result(csc)
+        class(SparseMatrixCOO) :: self
         type(SparseMatrixCSC)  :: csc
 
         integer :: m, n, nnz
         integer :: j, k, jold, jnew
         type(sp_t), pointer :: current
 
-        m   = this%m
-        n   = this%n
-        nnz = this%nnz
+        m   = self%m
+        n   = self%n
+        nnz = self%nnz
 
         call csc%allocate(m, n, nnz)
 
-        current => this%first
+        current => self%first
         jold = 1
         csc%colptr(1) = 1
         do k = 1, nnz
