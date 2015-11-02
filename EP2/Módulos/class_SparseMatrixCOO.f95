@@ -61,6 +61,7 @@ contains
 
         print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos.")', this%m, this%n, this%nnz
     end subroutine summary
+
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato COO
     subroutine allocate(this, m, n, nnz, colind, rowind, val)
         class(SparseMatrixCOO), intent(inout) :: this

@@ -10,7 +10,7 @@ module class_SparseMatrixCSC
         integer, pointer :: colptr(:), rowval(:)
         real,    pointer :: nzval(:)
     contains
-        procedure :: print, allocate, deallocate, times
+        procedure :: print, summary, allocate, deallocate, times
     end type SparseMatrixCSC
 
 contains
@@ -36,6 +36,13 @@ contains
         end do
         print *, ''
     end subroutine print
+
+    ! Similar ao print, mas não imprime os elementos em si.
+    subroutine summary(this)
+        class(SparseMatrixCSC), intent(in) :: this
+
+        print '("Matriz esparsa CSC ", i0, "x", i0, " com ", i0, " valores não nulos.")', this%m, this%n, this%nnz
+    end subroutine summary
 
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato CSC
     subroutine allocate(this, m, n, nnz)

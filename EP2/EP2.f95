@@ -4,7 +4,7 @@ program EP2
     use RandomSparseMatrix
     implicit none
 
-    ! type(SparseMatrixCSC) :: A
+    type(SparseMatrixCSC) :: A
     type(SparseMatrixCOO) :: tmp
     integer :: hasindex, i, j
     real :: v, w
@@ -33,7 +33,7 @@ program EP2
     ! tmp%nnz = 0
     ! hasindex = tmp%setindex(1, 1, 11.0)
     ! hasindex = tmp%setindex(5, 7, 99.0)
-    tmp = sprand(1000, 0.01)
+    tmp = sprand(10000, 0.01)
     call tmp%summary
 
     do j = 1, tmp%n
@@ -46,8 +46,8 @@ program EP2
             end if
         end do
     end do
-    ! A = tmp%to_csc()
-    ! call A%print
+    A = tmp%to_csc()
+    call A%summary
     call tmp%deallocate
     ! print *, tmp%val
     ! print *, tmp%getindex(5, 7, v)
