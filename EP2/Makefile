@@ -3,7 +3,7 @@ SOURCE = $(NAME).f95
 OUTPUT = $(NAME).out
 
 MODDIR = ./Módulos/
-MODULES = class_SparseMatrixCSC class_SparseMatrixCOO RandomSparseMatrix
+MODULES = class_SparseMatrixCSC class_SparseMatrixCOO RandomSparseMatrix CG
 MODFILES = $(addprefix $(MODDIR), $(MODULES:=.f95))
 
 FFLAGS = -Wall -fdefault-real-8 -g3 -Wimplicit-interface # Usar double como default
