@@ -4,7 +4,7 @@ module class_SparseMatrixCOO
     private
     public :: SparseMatrixCOO
 
-
+    ! Nó da lista ligada
     type sp_t
         integer :: i, j
         real    :: v
@@ -12,6 +12,8 @@ module class_SparseMatrixCOO
         type(sp_t), pointer :: next => null()
     end type sp_t
 
+    ! Matriz esparsa no formato COO (Coordinate List) utilizando lista ligada
+    ! para os elementos, para facilitar a manipulação destes
     type SparseMatrixCOO
         integer    :: m, n
         integer    :: nnz
@@ -155,6 +157,11 @@ contains
         end if
     end function
 
+    ! Grava o valor v no elemento [i, j] da matriz.
+    ! Retorna:
+    !    -1: se o índice estiver fora dos limites da matriz
+    !     0: se for um elemento nulo da matriz
+    !     1: se for um elemento não nulo da matriz
     function setindex(self, i, j, v) result(hasindex)
         class(SparseMatrixCOO), intent(inout) :: self
         integer,                intent(in)    :: i, j
@@ -186,8 +193,10 @@ contains
 
         ! Itera a lista até achar a posição em que o elemento [i, j]
         ! deveria estar
-        do while (associated(current%next) .and. current%j <= j .and. current%i < i)
-            current => current%next
+        next => current%next
+        do while (associated(next) .and. next%j <= j .and. next%i <= i)
+            current => next
+            next    => next%next
         end do
 
         if (current%j == j .and. current%i == i) then
@@ -205,6 +214,7 @@ contains
             hasindex = 0
         end if
     end function setindex
+
     ! Cria uma matriz esparsa no formato CSC a partir de uma
     ! no formato COO
     function to_csc(self) result(csc)
@@ -239,7 +249,7 @@ contains
             current => current%next
         end do
 
-        do j = jold+1, n+1
+        do j = jnew+1, n+1
             csc%colptr(j) = nnz+1
         end do
     end function to_csc
