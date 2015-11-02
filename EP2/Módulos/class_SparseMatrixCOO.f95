@@ -17,7 +17,10 @@ module class_SparseMatrixCOO
         integer    :: nnz
         type(sp_t), pointer :: first => null()
     contains
-        procedure :: init, print, allocate, deallocate, getindex, setindex, to_csc
+        procedure :: init, print, summary, &
+                     allocate, deallocate, &
+                     getindex, setindex, &
+                     to_csc
     end type SparseMatrixCOO
 
 contains
@@ -31,7 +34,7 @@ contains
         this%n   = n
         this%nnz = 0
     end subroutine init
-    
+
     ! Imprime os elementos não nulos da matriz para tela
     subroutine print(this)
         class(SparseMatrixCOO) :: this
@@ -52,6 +55,12 @@ contains
         print *, ''
     end subroutine print
 
+    ! Similar ao print, mas não imprime os elementos em si.
+    subroutine summary(this)
+        class(SparseMatrixCOO), intent(in) :: this
+
+        print '("Matriz esparsa COO ", i0, "x", i0, " com ", i0, " valores não nulos.")', this%m, this%n, this%nnz
+    end subroutine summary
     ! Aloca uma matriz m×n esparsa com nnz elementos não-nulos no formato COO
     subroutine allocate(this, m, n, nnz, colind, rowind, val)
         class(SparseMatrixCOO), intent(inout) :: this
