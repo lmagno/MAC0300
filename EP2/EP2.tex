@@ -12,7 +12,6 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 
-
 \date{}
 \author{Lucas Magno \\ 7994983}
 \title{Exercício Programa 2 \\ Métodos iterativos para sistemas lineares: Gradientes Conjugados}
@@ -158,4 +157,26 @@
     \end{algorithm}
 
     em que a matriz $\mathbf{A}$ só aparece em um produto matriz-vetor.
+
+    \section*{O Programa}
+        Para testar o algoritmo, foram geradas matrizes esparsas aleatórias utilizando o método descrito em [1], variando-se o tamanho das matrizes
+        e sua densidade desejada $\tau$.
+        Como esse método não garante que a matriz gerada seja definida positiva, foram utilizados os módulos do EP1 (Cholesky e resolução de sistema tridiagonal)
+        para verificar isso, além de resolver novamente o sistema a fim de comparação.
+
+    \section*{Resultados}
+        Os sistemas foram resolvidos para matrizes com lado $n = 2, 4, \dots, 4096$ e
+        densidades $\tau = 0.01, 0.05, 0.1, 0.2$.
+
+        Os tempos de execução e dados no geral foram impressos para a tela enquanto que as
+        normas do resíduos em cada passo da solução por Gradientes Conjugados foram impressas
+        para arquivos externos para serem plotados.
+
+    \begin{thebibliography}
+        \bibitem{bau97}
+            Lloyd N. Trefethen \and David Bau,
+            \emph{Numerical Linear Algebra},
+            Society for Industrial and Applied Mathematics,
+            1997.
+    \end{thebibliography}
 \end{document}
