@@ -20,7 +20,7 @@ contains
         real, allocatable :: r(:), p(:), Ap(:)
         real :: eps, rsold, rsnew, alpha
 
-        eps = 1e-30
+        eps = 1e-150
         open(1, file = filename, status = "replace")
 
         n = size(b)

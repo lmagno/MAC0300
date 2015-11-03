@@ -14,6 +14,7 @@ module exemplos
         integer :: n
         logical :: cg_only
         logical :: posdef
+        real    :: tau
         real    :: sprand, to_csc, CG, full, Cholesky, diff
     contains
         procedure :: print, total
@@ -25,9 +26,9 @@ contains
     subroutine print(self)
         class(res_t) :: self
         if (self%cg_only) then
-            print '(i5, 3f10.4)', self%n, self%sprand, self%to_csc, self%CG
+            print '(i5, f5.2, 3f10.4)', self%n, self%tau, self%sprand, self%to_csc, self%CG
         else
-            print '(i5, 5f10.4, e10.2, l10)', self%n, self%sprand, self%to_csc, self%CG, &
+            print '(i5, f5.2, 5f10.4, e10.2, l10)', self%n, self%tau, self%sprand, self%to_csc, self%CG, &
                                                self%full, self%Cholesky, self%diff, self%posdef
         end if
     end subroutine
@@ -60,17 +61,18 @@ contains
         real, allocatable :: b(:), x_cg(:)
 
         integer*8 :: start, finish, cr, cm
-        character(len=32) :: filename
+        character(len=64) :: filename
         real :: rate
         type(res_t) :: res
 
-        write(filename, '(i0, "_", f4.2)'), n, tau
+        write(filename, '(A, i0, "_", f4.2)'), "Exemplos/", n, tau
         call system_clock(count_rate = cr, count_max = cm)
         rate = real(cr)
         call random_seed()
 
         res%cg_only = .true.
         res%n = n
+        res%tau = tau
         allocate(b(n))
         allocate(x_cg(n))
 
@@ -120,13 +122,14 @@ contains
         real :: rate
         type(res_t) :: res
 
-        write(filename, '(i0, "_", f4.2)'), n, tau
+        write(filename, '(A, i0, "_", f4.2)'), "Exemplos/", n, tau
         call system_clock(count_rate = cr, count_max = cm)
         rate = real(cr)
         call random_seed()
 
         res%cg_only = .false.
         res%n = n
+        res%tau = tau
         allocate(b(n))
         allocate(x_cg(n))
         allocate(x_chol(n))
