@@ -3,5 +3,9 @@ Bibliografia/
 *~
 *.mod
 *.dat
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
 EP1/Dados/sistema
 EP1/Dados/solução

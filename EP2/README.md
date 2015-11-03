@@ -3,13 +3,15 @@
 
 Este EP consiste em implementar a resolução de sistemas lineares na forma
 
-> **Ax** = **b**
+
+<p align="center"> <b>Ax</b> = <b>b</b> </p>
 
 onde
+<p align="center">
+<b>A</b> ∈ ℝⁿˣⁿ, simétrica, definida positiva e esparsa  
+<b>x</b>, <b>b</b> ∈ ℝⁿ densos
 
-> **A** ∈ ℝⁿˣⁿ, definida positiva e esparsa  
-> **x**, **b** ∈ ℝⁿ densos
-
+</p>
 através do método de Gradientes Conjugados.
 
 ### Motivação
@@ -61,6 +63,23 @@ coluna e então por linha
 o valor do primeiro elemento da coluna `j` na matriz.
 
 Vale notar que `nzval` e `rowval` são obtidos diretamente a partir de uma matriz no formato COO, sendo necessário apenas o cálculo de `colptr`.
-A vantagem de se utilizar este formato está na facilidade de se obter uma coluna da matriz (a coluna `j` são os elementos em `nzval` entre `colptr(j)` e `colptr(j+1)-1`), o que torna barato o produto matriz-vetor orientado a colunas.
+A vantagem de se utilizar este formato está na facilidade de se obter uma coluna da matriz (a coluna `j` são os elementos em `nzval` entre `colptr(j)` e `colptr(j+1)-1`), o que torna barato o produto matriz-vetor orientado a colunas, mais especificamente, da ordem do número do elementos não nulos da matriz, já que basta iterar sobre `nzval`.
 
 ### Gradientes Conjugados
+Como **A** é uma matriz definida positiva, vale que
+
+> **xᵀAx** ≥ **0**  
+
+onde a igualdade vale se e somente se **x** = **0**.
+Assim, **A** define uma norma e portanto um produto interno.
+Podemos então definir que dois vetores **u** e **v** são ortogonais se e somente se
+
+> **uᵀAv** = **0**
+
+Tendo isso, podemos pegar um conjunto P de n vetores **pᵢ** ortogonais entre si, que então formam uma base do ℝⁿ e podemos escrever qualquer vetor **x** ∈ ℝⁿ como uma combinação linear dos **pᵢ**
+
+> **x** = ∑αᵢ**pᵢ**
+
+onde os αᵢ são as projeções de **x** em **pᵢ**:
+
+<p align="center"> αᵢ = <b>pᵢAx</b>/<b>pᵢApᵢ</b> </p>

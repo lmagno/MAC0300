@@ -1,0 +1,161 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[brazilian]{babel}
+\usepackage[left=2.5cm,right=2.5cm,top=2.0cm,bottom=1.5cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+\date{}
+\author{Lucas Magno \\ 7994983}
+\title{Exercício Programa 2 \\ Métodos iterativos para sistemas lineares: Gradientes Conjugados}
+
+\begin{document}
+    \maketitle
+
+    \section*{Introdução}
+    Este EP consiste em implementar a resolução de sistemas lineares na forma
+
+    $$ \mathbf{Ax} = \mathbf{b} $$
+
+    onde
+    \begin{align*}
+        \mathbf{A} \in \mathbf{R}^{n\times n} & \text{, simétrica, definida positiva e esparsa} \\
+        \mathbf{x}, \mathbf{b}\in \mathbf{R}^{n} & \text{, densos}
+    \end{align*}
+    através do método de Gradientes Conjugados.
+
+    \section*{Motivação}
+    Por que utilizar matrizes esparsas?
+    A necessidade de matrizes esparsas fica mais clara quando se lida com matrizes gigantes,
+    de forma que armanezar a matriz toda na memória não é uma possibilidade. No entanto,
+    em diversas aplicações (diferenças finitas para resolução de equações diferenciais, por exemplo)
+    surgem matrizes bem estruturadas, com apenas alguns elementos não-nulos. Assim, guardando
+    apenas estes elementos, se torna possível manipular matrizes ordens de grandezas maiores
+    do que caberia na memória de um computador.
+
+    Por outro lado, embora economizem muita memória dependendo da densidade de elementos
+    não nulos, geralmente o acesso aos elementos de uma matriz esparsa é muito mais caro do que aos
+    de uma densa (que é $O$(1)), já que estes são armazenados utilizando estruturas que não
+    permitem o acesso direto a um elemento (como uma lista ligada). Este acesso pode ser
+    feito barato, a custo da eficiência de se iterar sobre as linhas ou colunas da matriz,
+    sendo difícil conciliar o desempenho dessas duas operações.
+
+    Por esses motivos, os métodos padrões de resolução de sistemas lineares (LU, Cholesky)
+    não são eficazes para matrizes esparsas, pois além de acessarem diretamente elementos
+    da matriz, também podem estragar sua esparsidade ao decompô-la em outras matrizes.
+
+    É aí que entra o método de Gradientes Conjugados, uma vez que ele depende somente do
+    produto matriz-vetor entre a matriz esparsa e vetores densos, o que pode ser feito
+    eficaz facilmente, escolhendo uma estrutura adequada. Além disso, como não altera
+    a matriz original, nem a decompõe em novas, não altera sua esparsidade, mantendo
+    a eficiência de seu uso.
+
+    \section*{Matrizes Esparsas}
+    Há diversas implementações comuns de matrizes esparsas, com suas vantagens e desvantagens,
+    mas aqui vamos focar nas duas utilizadas neste EP.
+
+    \subsection*{Coordinate List (COO)}
+    É uma forma simples de matriz esparsa, composta por uma cadeia ordenada de tuplas na forma
+    (linha, coluna, valor). Neste trabalho foi implementada utilizando uma lista ligada,
+    tornando simples a inserção de elementos novos mantendo a ordenação escolhida (por colunas
+    e então por linhas).
+    Entretanto, obter uma coluna específica de uma matriz neste formato não é muito eficiente,
+    então ele foi utilizado somente para construção da matriz esparsa e então traduzido
+    para um formato mais adequado.
+
+    \subsection*{Compressed Sparse Column (CSC)}
+    Mais complexo do que o formato COO, o CSC é composto principalmente por três vetores
+
+    \begin{itemize}
+        \item \textbf{nzval}: contém os valores de todos os elementos não-nulos, ordenados por
+        coluna e então por linha
+        \item \textbf{rowval}: contém os valores dos índices de linha de cada elemento correspondente em \texttt{nzval}
+        \item \textbf{colptr}: contém os índices de \texttt{nzval} em que se encontram os primeiros elementos de cada coluna da matriz. Por exemplo, \texttt{nzval(colptr(j))} representa
+        o valor do primeiro elemento da coluna \texttt{j} na matriz.
+    \end{itemize}
+    Vale notar que \texttt{nzval} e \texttt{rowval} são obtidos diretamente a partir de uma matriz no formato COO, sendo necessário apenas o cálculo de \texttt{colptr}.
+    A vantagem de se utilizar este formato está na facilidade de se obter uma coluna da matriz (a coluna \texttt{j} são os elementos em \texttt{nzval} entre \texttt{colptr(j)} e \texttt{colptr(j+1)-1}), o que torna barato o produto matriz-vetor orientado a colunas, mais especificamente, da ordem do número do elementos não nulos da matriz, já que basta iterar sobre \texttt{nzval}.
+
+    \section*{Gradientes Conjugados}
+    Como $\mathbf{A} \in \mathbf{R}^{n\times n}$ é uma matriz definida positiva, vale que
+
+    $$ \mathbf{x^{T}Ax} \geq \mathbf{0} $$
+
+    onde a igualdade vale se e somente se $\mathbf{x} = \mathbf{0}$ .
+    Assim, $\mathbf{A}$ define uma norma e portanto um produto interno.
+    Podemos então definir que dois vetores $\mathbf{u}$ e $\mathbf{v}$ são ortogonais se e somente se
+
+    $$ \mathbf{u^{T}Av} = \mathbf{0}$$
+
+    Tendo isso, podemos pegar um conjunto $P$ de $n$ vetores $\mathbf{p_i}$ ortogonais entre si, que então formam uma base do $\mathbf{R}^n$ e podemos escrever qualquer vetor $ \mathbf{x} \in \mathbf{R}^n$ como uma combinação linear dos $\mathbf{p_i}$
+
+    $$ \mathbf{x} = \sum_i \alpha_i \mathbf{p_i} $$
+
+    onde os $\alpha_i$ são as projeções de $\mathbf{x}$ em $\mathbf{p_i}$:
+
+    $$ \alpha_i = \frac{\mathbf{p_i Ax}}{\mathbf{p_i^TAp_i}} = \frac{\mathbf{p_i b}}{\mathbf{p_i^TAp_i}} $$
+
+    Então bastaria escolher os $\mathbf{p_i}$ e calcular as projeções. No entanto, mesmo isso pode ser custoso, pois estamos lidando com $n$ muito grande.
+    Na verdade, podemos escolher os $\mathbf{p_i}$ de forma que apenas alguns deles sejam necessários para uma boa aproximação de $\mathbf{x}$, então é possível construir um algoritmo iterativo, que se aproxima da solução verdadeira e a alcançaria em $n$ passos, se fosse utilizada precisão infitita, uma vez que isso representa a soma de todas as projeções, que é a identidade.
+
+    Definindo $\mathbf{x_\star}$ como a solução de $\mathbf{Ax_\star} = \mathbf{b}$, queremos então minimizar o erro definido por
+    $$ \mathbf{e} = \mathbf{x_\star} - \mathbf{x}$$
+
+    mas não temos como calcular $\mathbf{e}$, pois não possuímos $\mathbf{x_\star}$. Entretanto, vale que
+    $$ \| \mathbf{e} \|_A \propto \frac{1}{2}\mathbf{x^TAx - x^Tb} $$
+
+    Como queremos minimizar essa função, poderíamos escolher as projeções (que podem ser vistas como direções de passo) no sentido contrário de seu gradiente (que é $\mathbf{Ax - b}$), mas também queremos manter os $\mathbf{p_i}$ ortogonais entre si. Logo, se definirmos $\mathbf{r_i} = \mathbf{b - Ax_i}$ (o resíduo no passo $i$), podemos definir
+    $$ \mathbf{p_i} = \mathbf{r_i} - \sum_{k<i} \mathbf{\frac{p_k^T A r_i}{p_k^T A p_k} p_k}$$
+
+    Explorando as ortogonalidades entre $\mathbf{p}$, $\mathbf{r}$ e $\mathbf{x}$, pode-se mostrar que
+
+    \begin{align*}
+        \mathbf{x_{i+1}} &= \mathbf{x_i} + \alpha_i\mathbf{p_i}  \\
+        \mathbf{r_{i+1}} &= \mathbf{r_i} - \alpha_i\mathbf{Ap_i} \\
+        \mathbf{p_{i+1}} &= \mathbf{r_i} + \beta_i\mathbf{p_i}
+    \end{align*}
+
+    onde
+
+    \begin{align*}
+        \alpha_i &= \mathbf{\frac{r_i^Tr_i}{p_i^TAp_i}} \\
+        \beta_i  &= \mathbf{\frac{r_{i+1}^Tr_{i+1}}{r_i^Tr_i}}
+    \end{align*}
+
+    Portanto, o algoritmo fica
+    \begin{algorithm}
+        \caption{Gradientes Conjugados}
+        \begin{algorithmic}[1]
+            \State $\mathbf{r_0} \gets \mathbf{b - Ax_0}$
+            \State $\mathbf{p_0} \gets \mathbf{r_0}$
+            \State $i \gets 0$
+            \Loop
+                \State $\alpha_i \gets \frac{\mathbf{r_i}\cdot\mathbf{r_i}}{\mathbf{p_i\cdot Ap_i}}$
+                \State $\mathbf{x_{i+1}} \gets \mathbf{x_i} + \alpha_i\mathbf{p_i}$
+                \State $\mathbf{r_{i+1}} \gets \mathbf{r_i} - \alpha_i\mathbf{Ap_i}$
+
+                \If {$\sqrt{\mathbf{r_{i+1}}\cdot\mathbf{r_{i+1}}} < \epsilon$}
+
+                    \textbf{exit}
+                \EndIf
+
+                \State $\beta_i \gets \frac{\mathbf{r_{i+1}}\cdot\mathbf{r_{i+1}}}{\mathbf{r_i}\cdot\mathbf{r_i}}$
+                \State $\mathbf{p_{i+1}} \gets \mathbf{r_{i+1}} + \beta_i\mathbf{p_i}$
+                \State $k \gets k + 1$
+            \EndLoop
+
+        \Return $\mathbf{x_{i+1}}$
+
+        \end{algorithmic}
+    \end{algorithm}
+
+    em que a matriz $\mathbf{A}$ só aparece em um produto matriz-vetor.
+\end{document}
