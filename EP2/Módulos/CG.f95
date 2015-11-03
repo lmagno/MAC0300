@@ -45,7 +45,7 @@ contains
             r = r - alpha*Ap
 
             rsnew = dot_product(r, r)
-            write (1, '(i0, " ", e20.6)'), i, sqrt(rsnew)
+            write (1, '(i0, " ", es20.6e3)'), i, sqrt(rsnew)
             if (sqrt(rsnew) < eps) exit
 
             p = r + (rsnew/rsold)*p

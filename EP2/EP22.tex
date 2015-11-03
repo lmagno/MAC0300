@@ -158,10 +158,148 @@
 
     em que a matriz $\mathbf{A}$ só aparece em um produto matriz-vetor.
 
-    \section*{O Programa}
-        Para testar o algoritmo, foram geradas matrizes esparsas aleatórias utilizando o método descrito em [1]
-    \section*{Resultados}
-        O programa foi executado
+  \section*{O Programa}
+    Para testar o algoritmo, foram geradas matrizes esparsas aleatórias utilizando o método descrito em [1], variando-se o tamanho das matrizes
+    e sua densidade desejada $\tau$.
+    Como esse método não garante que a matriz gerada seja definida positiva, foram utilizados os módulos do EP1 (Cholesky e resolução de sistema tridiagonal)
+    para verificar isso, além de resolver novamente o sistema a fim de comparação.
+
+  \section*{Resultados}
+      Os sistemas foram resolvidos para matrizes com lado $n = 2, 4, \dots, 4096$ e
+      densidades $\tau = 0.001, 0.01, 0.05, 0.1, 0.2$.
+
+      Definindo como os resultados de cada experimento:
+
+      \begin{itemize}
+      \item Valores
+        \begin{itemize}
+          \item \boldmath{$n$}: tamanho do lado da matriz
+          \item \boldmath{$\tau$}: densidade aproximada de elementos não-nulos
+          \item \textbf{diff}: norma-2 da diferença entre os resultados obtidos pelo método
+          dos Gradientes Conjugados e Cholesky
+          \item \textbf{posdef}: se a matriz é definida positiva ou não, resultado obtido
+          pelo método de Cholesky
+        \end{itemize}
+
+      \item Tempos de execução (em segundos)
+        \begin{itemize}
+          \item \textbf{sprand}: geração da matriz aleatória
+          \item \textbf{to\_csc}: conversão da matriz esparsa do formato COO para CSC
+          \item \textbf{CG}: resolução do sistema pelo método de Gradientes Conjugados
+          \item \textbf{full}: conversão da matriz esparsa do formato CSC para denso
+          \item \textbf{Cholesky}: resolução do sistema pelo método de Cholesky
+        \end{itemize}
+    \end{itemize}
+      Esses dados de todos os exemplos rodados foram gravados em um arquivo de saída (\texttt{output}),
+      cujas últimas entradas são mostradas na tabela seguinte:
+
+      \begin{table}[h]
+        \caption{Resultados para matrizes com $n \geq 512$}
+        \centering
+        \begin{tabular}{rrrrrrrrr}
+            $n$ & $\tau$  & $sprand$ & $to\_csc$ & $CG$ & $full$ & $Cholesky$ & $diff$ & $posdef$\\
+            \hline
+            512 & 0.001 & 0.0026 & 0.0000 & 0.0008 & 0.0006 & 0.0902 & 0.23E-29 & T \\
+            512 & 0.010 & 0.0156 & 0.0000 & 0.0028 & 0.0006 & 0.0912 & 0.64E-28 & T \\
+            512 & 0.050 & 0.3414 & 0.0001 & 0.0173 & 0.0003 & 0.0913 & 0.23E-27 & T \\
+            512 & 0.100 & 1.5874 & 0.0003 & 0.0790 & 0.0006 & 0.0925 & 0.10E-26 & T \\
+            512 & 0.200 & 7.1077 & 0.0005 & 0.1714 & 0.0013 & 0.0397 & 0.21E+05 & F \\
+            1024 & 0.001 & 0.0135 & 0.0000 & 0.0021 & 0.0015 & 0.7289 & 0.58E-29 & T \\
+            1024 & 0.010 & 0.2452 & 0.0001 & 0.0089 & 0.0016 & 0.7242 & 0.47E-27 & T \\
+            1024 & 0.050 & 7.1698 & 0.0006 & 0.0781 & 0.0019 & 0.7305 & 0.11E-26 & T \\
+            1024 & 0.100 & 29.6642 & 0.0012 & 0.6813 & 0.0033 & 0.7023 & 0.37E+07 & F \\
+            1024 & 0.200 & 147.0778 & 0.0039 & 1.4032 & 0.0059 & 0.2001 & 0.79E+05 & F \\
+            2048 & 0.001 & 0.0902 & 0.0001 & 0.0050 & 0.0124 & 5.7556 & 0.21E-28 & T \\
+            2048 & 0.010 & 4.6022 & 0.0004 & 0.0314 & 0.0053 & 5.7290 & 0.39E-26 & T \\
+            2048 & 0.050 & 153.1841 & 0.0029 & 0.4040 & 0.0096 & 5.7582 & 0.60E-26 & T \\
+            2048 & 0.100 & 1046.5856 & 0.0066 & 5.2566 & 0.0177 & 4.2694 & 0.66E+06 & F \\
+            2048 & 0.200 & 5413.2395 & 0.0114 & 10.3974 & 0.0217 & 0.7222 & 0.33E+07 & F \\
+            4096 & 0.001 & 1.0146 & 0.0002 & 0.0137 & 0.0902 & 45.5266 & 0.20E-27 & T \\
+            4096 & 0.010 & 88.4795 & 0.0025 & 0.1262 & 0.0726 & 45.5512 & 0.19E-25 & T \\
+            4096 & 0.050 & 5447.2776 & 0.0118 & 2.7504 & 0.0856 & 45.3957 & 0.48E-25 & T \\
+        \end{tabular}
+      \end{table}
+
+      Observa-se que o dominante é a geração de matrizes aleatórias, já que o algoritmo depende da inserção
+      de elementos novos da matriz, cujo custo aumenta linearmente com o número de elementos não-nulo já existentes
+      na matriz, então um algoritmo mais eficiente permitiria resolver sistemas maiores.
+
+      \newpage
+      Entretanto, utilizando matrizes com baixíssimas densidades, o custo do algoritmo cai drasticamente, fazendo
+      com que a resolução por Cholesky domine o tempo de execução, enquanto que a por Gradientes Conjugados se mantém
+      desprezível em comparação, como visto na tabela a seguir.\footnote{Alguns valores estão faltando pois não foi utilizado o método
+      de Cholesky naquele caso, pelo custo de sua execução ser muito alto.}
+
+      \begin{table}[h]
+        \caption{Resultados para matrizes com $\tau = 0.001$}
+        \centering
+        \begin{tabular}{rrrrrrrrr}
+            $n$ & $\tau$  & $sprand$ & $to\_csc$ & $CG$ & $full$ & $Cholesky$ & $diff$ & $posdef$\\
+            \hline
+            512  & 0.001 &  0.0024 & 0.0000 & 0.0010 & 0.0008 &   0.1185 & 0.22E-29 & T \\
+            1024 & 0.001 &  0.0135 & 0.0000 & 0.0023 & 0.0021 &   0.9198 & 0.73E-29 & T \\
+            2048 & 0.001 &  0.1031 & 0.0001 & 0.0053 & 0.0228 &   7.6763 & 0.24E-28 & T \\
+            4096 & 0.001 &  1.1619 & 0.0003 & 0.0156 & 0.0735 &  59.7550 & 0.21E-27 & T \\
+            8192 & 0.001 & 17.2613 & 0.0011 & 0.0466 & 0.2843 & 470.6166 & 0.43E-26 & T \\
+            16384 & 0.001 & 490.3682 & 0.0085 & 0.1629  & & & & \\
+        \end{tabular}
+      \end{table}
+
+      Ainda assim, a matriz com o maior tamanho testado, $n = 16384$, utilizando precisão dupla ocuparia
+      $$ \frac{n^2 8\text{ bytes}}{1024^3 \frac{\text{bytes}}{\text{gigabyte}}} = \frac{2^{31}}{2^{30}} \text{ gigabytes} = 2 \text{ gigabytes} $$
+      o que ainda cabe na memória.
+
+      Portanto, considerando apenas as matrizes positivas definidas, enquanto que o método de Cholesky mostra desempenho
+      aproximadamente constante (não importanto a densidade de elementos não-nulos), o método de Gradientes Conjugados é
+      ordens de grandeza mais rápido, embora dependa um pouco dessa densidade.
+
+      Também foram gravados a norma do resíduo em cada passo do algoritmo de Gradientes Conjugados, a fim de se analisar
+      a taxa de convergência.
+      Por exemplo, para uma matriz $512\times512$ (similar ao exemplo em [1]), temos
+      \begin{figure}[h]
+        \caption{Convergências para $n = 512$}
+        \includegraphics[width=\textwidth]{Exemplos/n_512.pdf}
+      \end{figure}
+
+      em que se observa que a taxa de convergência (que pode ser aproximada pela inclinação das retas) cai rapidamente com a densidade da matriz,
+      até o caso $\tau = 0.20$, em que a taxa de convergência é nula (linha horizontal). De fato, a matriz em questão não é definida
+      positiva e, portanto, o método não tem convergência garantido.
+
+      \newpage
+      No entanto, é estranho encontrar resultados na ordem de $10^{-160}$ em algoritmos em geral. Esse número vem de uma raiz quadrada,
+      logo antes deveria ser da ordem de $10^{-320}$ o que praticamente o limite \emph{floats} com 64bits ($\approx 10^{-323}$ com números subnormais),
+      indicando uma estabilidade impressionante do algoritmo em relação a operações entre valores de ordem similares (evitando \emph{underflow}), uma vez
+      que concorda com os resultados do método de Cholesky.
+
+      Podemos inverter a situação e plotar as taxas de convergência para matrizes de diversos tamanhos com a mesma densidade, e obtemos
+
+      \begin{figure}[h]
+        \centering
+        \caption{Convergências para $\tau = 0.01$}
+        \includegraphics[width=\textwidth]{{Exemplos/tau_0.01}.pdf}
+      \end{figure}
+
+      \begin{figure}[h]
+        \centering
+        \caption{Convergências para $\tau = 0.10$}
+        \includegraphics[width=\textwidth]{{Exemplos/tau_0.10}.pdf}
+      \end{figure}
+
+      Ambos tipos de gráficos são bem similares, e indicam que a taxa de convergência cai com a densidade e com o tamanho da matriz,
+      além de permitir identificar matrizes não definidas positivas.
+
+    \newpage
+    \section*{Conclusão}
+      Portanto, ao explorar as vantagens apresentadas pelas matrizes esparsas e por ser um algoritmo iterativo de rápida convergência,
+      o método de Gradientes Conjugados é o indicado para resolução de sistemas lineares com matrizes de coeficientes grandes, esparsas,
+      simétricas e definidas positivas, pois apresenta desempenho ordens de grandeza maior que o método padrão, o de Cholesky.
+
+      A desvantagem é a perda de um método direto para determinar se a matriz é realmente positiva definida, como Cholesky faz,
+      mas ainda é possível fazer inferências a partir da taxa de convergência.
+
+      Além disso, seria interessante utilizar um algoritmo de geração de matrizes esparsas aleatórias mais eficiente, que permitisse
+      testar matrizes que não coubessem na memória do computador em sua forma densa, já que uma matriz com o maior tamanho testado ainda
+      caberia na memória de um computador comum.
 
     \begin{thebibliography}{9}
         \bibitem{bau97}
