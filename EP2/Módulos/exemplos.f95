@@ -17,7 +17,7 @@ module exemplos
         real    :: tau
         real    :: sprand, to_csc, CG, full, Cholesky, diff
     contains
-        procedure :: print, total
+        procedure :: print, string, total
     end type res_t
 
 contains
@@ -26,13 +26,25 @@ contains
     subroutine print(self)
         class(res_t) :: self
         if (self%cg_only) then
-            print '(i5, f5.2, 3f10.4)', self%n, self%tau, self%sprand, self%to_csc, self%CG
+            print '(i5, f6.3, 3f10.4)', self%n, self%tau, self%sprand, self%to_csc, self%CG
         else
-            print '(i5, f5.2, 5f10.4, e10.2, l10)', self%n, self%tau, self%sprand, self%to_csc, self%CG, &
+            print '(i5, f6.3, 5f10.4, e10.2, l10)', self%n, self%tau, self%sprand, self%to_csc, self%CG, &
                                                self%full, self%Cholesky, self%diff, self%posdef
         end if
     end subroutine
 
+    ! Retorn os resultados numa string de forma organizada
+    function string(self) result(results)
+        class(res_t) :: self
+
+        character(len=100) :: results
+        if (self%cg_only) then
+            write (results, '(i5, f6.3, 3f10.4)'), self%n, self%tau, self%sprand, self%to_csc, self%CG
+        else
+            write (results, '(i5, f6.3, 5f10.4, e10.2, l10)'), self%n, self%tau, self%sprand, self%to_csc, self%CG, &
+                                               self%full, self%Cholesky, self%diff, self%posdef
+        end if
+    end function
     ! Retorna o tempo total de execução daquele exemplo
     ! (a soma de todos os passos)
     function total(self) result(t)
