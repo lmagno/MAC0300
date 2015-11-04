@@ -16,12 +16,12 @@ contains
 
         call A%init(n, n)
 
-        do j = 1, n
+        do j = n, 1, -1
             ! Coloca 1's na diagonal principal
             hasindex = A%setindex(j, j, 1.0)
 
             ! Preenche o restante da matriz simetricamente
-            do i = j+1, n
+            do i = n, j+1, -1
                 ! v ∈ [-1, 1]
                 v = 2*rand() - 1
                 if (abs(v) < tau) then
