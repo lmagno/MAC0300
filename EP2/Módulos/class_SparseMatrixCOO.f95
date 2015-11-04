@@ -207,6 +207,20 @@ contains
             return
         end if
 
+
+        if (current%i > i .and. current%j > j) then
+            allocate(next)
+            next%i = i
+            next%j = j
+            next%v = v
+
+            next%next  => self%first
+            self%first => next
+            self%nnz = self%nnz + 1
+            hasindex = 0
+            return
+        end if
+
         ! Itera a lista até achar a posição em que o elemento [i, j]
         ! deveria estar
         next => current%next
