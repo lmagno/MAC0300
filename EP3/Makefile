@@ -3,15 +3,15 @@ SOURCE = $(NAME).c
 OUTPUT = $(NAME).out
 
 LIBDIR = ./Bibliotecas/
-LIBS = 
+LIBS = Entrada Utils
 LIBFILES   = $(addprefix $(LIBDIR), $(LIBS:=.c))
 LIBHEADERS = $(addprefix $(LIBDIR), $(LIBS:=.h))
 CC     = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 
 .PHONY: all clean
 
-$(OUTPUT): $(LIBFILES) $(SOURCE)
+$(OUTPUT): $(LIBFILES) $(LIBHEADERS) $(SOURCE)
 	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) -o $(OUTPUT)
 
 clean:
