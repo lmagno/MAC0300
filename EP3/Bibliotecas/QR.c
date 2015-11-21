@@ -11,7 +11,7 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
     double *norms, *w;
     double eps = 1e-15;
 
-    w      = malloc(m*sizeof(double));
+    w = malloc(m*sizeof(double));
 
     // Encontra o maior elemento de A
     max = 0.0;
@@ -128,17 +128,8 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
     }
 
     *posto = k;
-    printf("\nR\n");
-    for (i = 0; i < m; i++) {
-        for (j = 0; j < i; j++)
-            printf("0.000000\t");
-
-        for (j = i; j < m; j++)
-            printf("%f\t", max*A[i][j]);
-
-        printf("\n");
-    }
 
     free(norms);
     free(w);
+    return ;
 }
