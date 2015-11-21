@@ -1,3 +1,13 @@
-#include <stdio.h>
+#include "Utils.h"
 
-void load(int *n, int *m, double ***A, double **b, char *filename);
+#ifndef STRUCT_SISTEMA_DEF
+#define STRUCT_SISTEMA_DEF
+typedef struct sistema_t {
+    Matriz A;
+    double *b;
+} Sistema;
+
+#endif
+
+Sistema load(char *filename);
+void sysfree(Sistema S);

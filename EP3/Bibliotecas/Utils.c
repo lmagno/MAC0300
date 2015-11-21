@@ -1,20 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "Utils.h"
 
 // Aloca uma matriz A (n×m) de doubles
-double** matalloc(int n, int m) {
+Matriz matalloc(int n, int m) {
     int i;
-    double **A;
+    double **M;
+    Matriz A;
 
-    A    = malloc(n*sizeof(double*));
-    A[0] = malloc(n*m*sizeof(double));
+    M    = malloc(n*sizeof(double*));
+    M[0] = malloc(n*m*sizeof(double));
     for (i = 1; i < n; i++)
-        A[i] = A[0] + i*m;
+        M[i] = M[0] + i*m;
 
+    A.n = n;
+    A.m = m;
+    A.M = M;
     return A;
 }
 
-void matfree(double **A) {
-    free(A[0]);
-    free(A);
+void matfree(Matriz A) {
+    free(A.M[0]);
+    free(A.M);
 }

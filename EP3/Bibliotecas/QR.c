@@ -1,23 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "QR.h"
 
 // Decompõe uma matriz A (n×m) em uma matriz ortogonal Q (n×n) e uma
 // triangular superior R (m×m) tal que
 //     A = Q[R 0]ᵀ
-void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
+QRFACT qr(Matriz A) {
+    int    n, m;
+    double **M;
     int    i, j, k, maxind;
     double max, maxnorm, v, tau, gamma;
     double *norms, *w;
     double eps = 1e-15;
+    QRFACT q;
+    int *p;
+    double *gammas;
 
-    w = malloc(m*sizeof(double));
+    n = A.n;
+    m = A.m;
+    M = A.M;
+
+    p      = malloc(m*sizeof(int));
+    gammas = malloc(m*sizeof(double));
+    w      = malloc(m*sizeof(double));
 
     // Encontra o maior elemento de A
     max = 0.0;
     for (i = 0; i < n; i++){
         for (j = 0; j < m; j++) {
-            v = fabs(A[i][j]);
+            v = fabs(M[i][j]);
 
             if (v > max)
                 max = v;
@@ -27,14 +39,14 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
     // Reescala toda a matriz A a fim de evitar overflow
     for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++)
-            A[i][j] /= max;
+            M[i][j] /= max;
     }
 
     // Calcula as normas (ao quadrado) das colunas de A
     norms = calloc(m, sizeof(double));
     for (i = 0; i < n; i++) {
         for (j = 0; j < m; j++) {
-            v = A[i][j];
+            v = M[i][j];
             norms[j] += v*v;
         }
     }
@@ -43,7 +55,7 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
         // Calcula as normas das colunas da submatriz atual
         if (k > 0) {
             for (j = k; j < m; j++) {
-                v = A[k-1][j];
+                v = M[k-1][j];
                 norms[j] -= v*v;
             }
         }
@@ -74,9 +86,9 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
             norms[maxind] = v;
 
             for (i = 0; i < n; i++) {
-                v = A[i][k];
-                A[i][k] = A[i][maxind];
-                A[i][maxind] = v;
+                v = M[i][k];
+                M[i][k] = M[i][maxind];
+                M[i][maxind] = v;
             }
         }
 
@@ -86,7 +98,7 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
         /////////////////////////////////////////////////////////
 
         // Escolhe o sinal de τ para evitar cancelamento catastrófico
-        v   = A[k][k];
+        v   = M[k][k];
         tau = sqrt(norms[k]);
         if (v < 0)
             tau *= -1;
@@ -96,10 +108,10 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
         gamma = v/tau;
         gammas[k] = gamma;
 
-        A[k][k] = -tau;
+        M[k][k] = -tau;
         // Normaliza u
         for (i = k+1; i < n; i++)
-            A[i][k] /= v;
+            M[i][k] /= v;
 
         /////////////////////////////////////////////////////
         // Aplica o refletor no restante da submatriz
@@ -108,28 +120,35 @@ void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
 
         // wᵀ ← γₖuₖᵀA[k:n][k+1:m]
         for (j = k+1; j < m; j++)
-            w[j] = gamma*A[k][j];
+            w[j] = gamma*M[k][j];
 
         for (i = k+1; i < n; i++) {
-            v = gamma*A[i][k];
+            v = gamma*M[i][k];
             for (j = k+1; j < m; j++)
-                w[j] += v*A[i][j];
+                w[j] += v*M[i][j];
         }
 
         // A[k:n][k+1:m] ← A[k:n][k+1:m] - uₖwᵀ
         for (j = k+1; j < m; j++)
-            A[k][j] -= w[j];
+            M[k][j] -= w[j];
 
         for (i = k+1; i < n; i++) {
-            v = A[i][k];
+            v = M[i][k];
             for (j = k+1; j < m; j++)
-                A[i][j] -= v*w[j];
+                M[i][j] -= v*w[j];
         }
     }
 
-    *posto = k;
+    q.posto  = k;
+    q.p      = p;
+    q.gammas = gammas;
 
     free(norms);
     free(w);
-    return ;
+    return q;
+}
+
+void qrfree(QRFACT q) {
+    free(q.p);
+    free(q.gammas);
 }
