@@ -4,21 +4,17 @@
 // Aloca uma matriz A (n×m) de doubles
 double** matalloc(int n, int m) {
     int i;
-    double **C;
+    double **A;
 
-    C = malloc(n*sizeof(double*));
+    A    = malloc(n*sizeof(double*));
+    A[0] = malloc(n*m*sizeof(double));
+    for (i = 1; i < n; i++)
+        A[i] = A[0] + i*m;
 
-    for (i = 0; i < n; i++)
-        C[i] = malloc(m*sizeof(double));
-
-    return C;
+    return A;
 }
 
-void matfree(double **A, int n) {
-    int i;
-
-    for (i = 0; i < n; i++)
-        free(A[i]);
-
+void matfree(double **A) {
+    free(A[0]);
     free(A);
 }
