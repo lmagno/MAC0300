@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <math.h>
 
-void qr(double **A, int n, int m) {
+// Decompõe uma matriz A (n×m) em uma matriz ortogonal Q (n×n) e uma
+// triangular superior R (m×m) tal que
+//     A = Q[R 0]ᵀ
+void qr(double **A, int n, int m, int *p, double *gammas, int *posto) {
     int    i, j, k, maxind;
     double max, maxnorm, v, tau, gamma;
-    double *norms, *gammas, *w;
-    int    *P;
+    double *norms, *w;
+    double eps = 1e-15;
 
-    gammas = malloc(m*sizeof(double));
     w      = malloc(m*sizeof(double));
 
     // Encontra o maior elemento de A
@@ -37,7 +39,6 @@ void qr(double **A, int n, int m) {
         }
     }
 
-    P = malloc(m*sizeof(int));
     for (k = 0; k < m; k++) {
         // Calcula as normas das colunas da submatriz atual
         if (k > 0) {
@@ -59,8 +60,14 @@ void qr(double **A, int n, int m) {
             }
         }
 
+        // Caso todas as colunas restantes tenham norma desprezível, a matriz
+        // tem posto incompleto e não há mais o que fazer
+        if (maxnorm < eps) {
+            break;
+        }
+
         // Permuta a coluna atual com a de maior norma (caso não seja a primeira)
-        P[k] = maxind;
+        p[k] = maxind;
         if (maxind != k) {
             v = norms[k];
             norms[k] = norms[maxind];
@@ -120,6 +127,7 @@ void qr(double **A, int n, int m) {
         }
     }
 
+    *posto = k;
     printf("\nR\n");
     for (i = 0; i < m; i++) {
         for (j = 0; j < i; j++)
@@ -130,8 +138,7 @@ void qr(double **A, int n, int m) {
 
         printf("\n");
     }
-    free(P);
+
     free(norms);
-    free(gammas);
     free(w);
 }

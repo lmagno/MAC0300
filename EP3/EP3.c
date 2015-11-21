@@ -6,11 +6,17 @@
 #include "Bibliotecas/QR.h"
 int main(int argc, char** argv) {
     double **A, *b;
+    double *gammas;
+    int    *p, posto;
     int n, m;
 
-    load(&n, &m, &A, &b, "Dados/sistema1.dat");
-    qr(A, n, m);
+    p      = malloc(m*sizeof(int));
+    gammas = malloc(m*sizeof(double));
 
+    load(&n, &m, &A, &b, "Dados/sistema1.dat");
+    qr(A, n, m, p, gammas, &posto);
+
+    printf("posto = %d\n", posto);
     matfree(A, n);
     free(b);
     return 0;
