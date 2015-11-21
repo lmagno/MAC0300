@@ -3,16 +3,18 @@ SOURCE = $(NAME).c
 OUTPUT = $(NAME).out
 
 LIBDIR = ./Bibliotecas/
-LIBS = Entrada Utils
+LIBS = Entrada Utils QR
 LIBFILES   = $(addprefix $(LIBDIR), $(LIBS:=.c))
 LIBHEADERS = $(addprefix $(LIBDIR), $(LIBS:=.h))
+
 CC     = gcc
 CFLAGS = -Wall -g
+LFLAGS = -lm
 
 .PHONY: all clean
 
 $(OUTPUT): $(LIBFILES) $(LIBHEADERS) $(SOURCE)
-	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) -o $(OUTPUT)
+	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) $(LFLAGS) -o $(OUTPUT)
 
 clean:
 	rm -f $(OUTPUT)

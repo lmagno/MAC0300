@@ -37,6 +37,22 @@ function main()
     end
 
     close(file)
+
+    file = open("solução1.dat", "w");
+    Q, R, p = qr(A, Val{true})
+    @printf file "Q\n"
+    writedlm(file, Q)
+
+    @printf file "\nR\n"
+    writedlm(file, R)
+
+    @printf file "\np\n"
+    writedlm(file, p)
+
+    @printf file "\nc̄\n"
+    writedlm(file, c̄)
+
+    close(file)
 end
 
 main()
