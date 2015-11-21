@@ -6,14 +6,14 @@
 // Decompõe uma matriz A (n×m) em uma matriz ortogonal Q (n×n) e uma
 // triangular superior R (m×m) tal que
 //     A = Q[R 0]ᵀ
-QRFACT qr(Matriz A) {
+QR qr(Matriz A) {
     int    n, m;
     double **M;
     int    i, j, k, maxind;
     double max, maxnorm, v, tau, gamma;
     double *norms, *w;
     double eps = 1e-15;
-    QRFACT q;
+    QR q;
     int *p;
     double *gammas;
 
@@ -148,7 +148,7 @@ QRFACT qr(Matriz A) {
     return q;
 }
 
-void qrfree(QRFACT q) {
+void qrfree(QR q) {
     free(q.p);
     free(q.gammas);
 }

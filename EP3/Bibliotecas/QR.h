@@ -7,8 +7,8 @@ typedef struct qr_t {
     int    *p;
     int    posto;
     double *gammas;
-} QRFACT;
+} QR;
 #endif
 
-QRFACT qr(Matriz A);
-void qrfree(QRFACT q);
+QR qr(Matriz A);
+void qrfree(QR q);

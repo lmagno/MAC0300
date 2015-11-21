@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     int    *p, posto;
     Sistema S;
     Matriz  A;
-    QRFACT  q;
+    QR      q;
 
     S = load("Dados/a1.dat");
     A = S.A;
