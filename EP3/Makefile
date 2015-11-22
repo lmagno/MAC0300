@@ -17,4 +17,4 @@ $(OUTPUT): $(LIBFILES) $(LIBHEADERS) $(SOURCE)
 	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) $(LFLAGS) -o $(OUTPUT)
 
 clean:
-	rm -f $(OUTPUT)
+	rm -f $(OUTPUT) Dados/*.out Dados/*.pdf
