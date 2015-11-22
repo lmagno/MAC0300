@@ -12,6 +12,7 @@
 \usepackage{subcaption}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{listings}
 
 \date{}
 \author{Lucas Magno \\ 7994983}
@@ -215,5 +216,72 @@
         $$ \|r\|_2 = \|d\|_2 $$
 
     \section*{O programa}
-        Esses métodos foram então implementados em um programa em C
+        Esses métodos foram então implementados em um programa em C, que permite resolver um dado sistema sobredeterminado ou então ajustar um polinômio de certo grau a um dado conjunto de pontos.
+
+        Ou seja, há duas formas de invocar o programa, cada uma com um tipo de arquivo de entrada diferente.
+
+        \subsection*{Sistema sobredeterminado qualquer}
+            Resolve o sistema
+                $$ Ax = b $$
+            com $A \in \mathbb{R}^{n\times m}$ e $b \in \mathbb{R}^n$, bem como essas dimensões, fornecidas num arquivo de entrada no seguinte formato\footnote{Vale notar que as matrizes devem ser escritas ordenadas por linhas.}
+        \begin{lstlisting}[mathescape, frame=single, caption={Formato do arquivo de entrada com um sistema sobredeterminado}]
+        n m
+        $a_{11}$
+        $a_{12}$
+        $\vdots$
+        $a_{n,m-1}$
+        $a_{nm}$
+        $b_1$
+        $\vdots$
+        $b_n$
+        \end{lstlisting}
+
+            E o programa em si é invocado na forma
+
+        \begin{lstlisting}
+        $ EP3 sys filename
+        \end{lstlisting}
+
+
+        \subsection*{Ajuste polinomial a um conjunto de pontos}
+            Dado um conjunto de pontos
+                $$ (t_i, b_i),\quad i = 1\dots n$$
+            ajusta um polinômio de grau $m-1$ a esses pontos por mínimos quadrados.
+
+            Ou seja, monta a matriz de Vandermonde do sistema
+            $$ A =
+            \begin{bmatrix}
+                1 & t_1 & t_1^2 & \dots & t_1^{m-1} \\
+                1 & t_2 & t_2^2 & \dots & t_2^{m-1} \\
+                \vdots & \vdots &\vdots & \ddots & \vdots   \\
+                1 & t_n & t_n^2 & \dots & t_n^{m-1} \\
+            \end{bmatrix}$$
+            e a utiliza para resolver o sistema
+            $$ Ax = b$$
+            em que $x$ é o vetor de coeficientes do polinômio que melhor ajusta os pontos, isto é
+            $$ p(t) = x_1 + x_2t + x_3t^2 + \dots + x_mt^{m-1}$$
+
+            \newpage
+            Os dados e as dimensões devem ser fornecidos no arquivo de entrada no formato
+        \begin{lstlisting}[mathescape, frame=single, caption={Formato do arquivo de entrada com um conjunto de pontos}]
+        n m
+        $t_{1}\, b_{1}$
+        $t_{2}\, b_{2}$
+        $\vdots$
+        $t_{n}\, b_{n}$
+        \end{lstlisting}
+
+        e o programa é invocado na forma
+
+        \begin{lstlisting}
+        $ EP3 data filename
+        \end{lstlisting}
+
+
+        Em ambos casos, o vetor solução $x$ é escrito para um arquivo de saída com o mesmo nome do de entrada, \texttt{filename}, mas com extensão \texttt{.out}.
+        Além disso, no caso de ser um conjunto de dados com um polinômio ajustado, é salvo em um arquivo \texttt{pdf} o plot dos dados sobrepostos ao polinômio encontrado.
+
+    \section*{Detalhes de implementação}
+    \section*{Exemplos}
+    \section*{Conclusão}
 \end{document}
