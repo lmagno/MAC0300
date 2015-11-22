@@ -14,19 +14,27 @@ int main(int argc, char** argv) {
     Matriz  A;
     QR      q;
     double *x;
-    char   *input;
+    char   *type, *input;
     int i;
 
-    // Escolhe o primeiro argumento como nome do arquivo
-    // de entrada
+    // Determina onde começam os argumentos de verdade
     i = 0;
     while(!strcmp("EP3", argv[i]))
         i++;
 
-    input = argv[i];
+    type  = argv[i];    // Tipo de entrada (sistema já montado ou dados)
+    input = argv[i+1];  // Nome do arquivo de entrada
 
     // Carrega o sistema (A e b) do arquivo de entrada
-    S = loaddata(input);
+    if (!strcmp("sys", type))
+        S = loadsys(input);
+    else if(!strcmp("data", type))
+        S = loaddata(input);
+    else {
+        fprintf(stderr, "Tipo de entrada '%s' não reconhecido.\n", type);
+        return 1;
+    }
+
     A = S.A;
 
     // Decompõe A por QR
@@ -39,7 +47,7 @@ int main(int argc, char** argv) {
     // Salva o resultado para um arquivo de saída
     save(x, A.m, input);
     plot(input, x);
-    
+
     // Libera as memórias alocadas
     free(x);
     sysfree(S);
