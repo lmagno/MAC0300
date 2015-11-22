@@ -12,3 +12,4 @@ typedef struct matriz_t {
 
 Matriz matalloc(int n, int m);
 void matfree(Matriz A);
+char* chgext(char *input, char *ext);
