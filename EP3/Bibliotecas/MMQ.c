@@ -2,6 +2,15 @@
 #include <stdlib.h>
 #include "MMQ.h"
 
+// Resolve o sistem S dado por
+//     Ax = b
+// a partir da decomposição QR q da matriz A de posto r tal que
+//         ÂPP⁻¹x = b̂,    Â = A/max, b̂ = b\max
+//         QRP⁻¹x = b̂
+// Cuja solução é dada por
+//          c = Qᵀb̂
+//         Rx̂ = ĉ,        ĉ = c[0:r-1]
+//          x = Px̂
 double* mmq(Sistema S, QR q) {
     Matriz A;
     int n, m;
@@ -24,28 +33,22 @@ double* mmq(Sistema S, QR q) {
 
     x = calloc(m, sizeof(double));
 
-    // Sistema
-    //         APP⁻¹x = b
-    //         QRP⁻¹x = b
-    // Solução
-    //          c = Qᵀb
-    //         Rx̂ = ĉ
-    //          x = Px̂
-
     // Reescala o vetor b para manter o sistema equivalente
     for (i = 0; i < n; i++)
         b[i] /= max;
 
-    // b ← Qᵣ…Q₁b
+    // b̂ ← Qᵣ…Q₁b̂
     for (k = 0; k < r; k++) {
-        // b ← b - γₖuₖuₖᵀb
+        // b̂ ← Qₖb̂
+        // b̂[0:k-1] ← b̂[0:k-1]
+        // b̂[k:n-1] ← b̂[k:n-1] - γₖuₖuₖᵀb̂[k:n-1]
 
-        // v ← uₖᵀb
+        // v ← uₖᵀb̂[k:n-1]
         v = b[k];
         for (i = k+1; i < n; i++)
             v += M[i][k]*b[i];
 
-        // b ← b - γₖuₖv
+        // b̂[k:n-1] ← b̂[k:n-1] - γₖuₖv
         gamma = gammas[k];
         b[k] -= gamma*v;
         for (i = k+1; i < n; i++)
@@ -54,7 +57,7 @@ double* mmq(Sistema S, QR q) {
     }
 
     // Backsubstitution
-    // Rx̂ = ĉ
+    // Rx̂ = b̂[0:r-1]
     for (i = r-1; i >= 0; i--) {
         v = b[i];
 

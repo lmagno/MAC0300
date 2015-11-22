@@ -4,8 +4,27 @@
 #include "QR.h"
 
 // Decompõe uma matriz A (n×m) em uma matriz ortogonal Q (n×n) e uma
-// triangular superior R (m×m) tal que
-//     A = Q[R 0]ᵀ
+//  R (n×m) tal que
+//     ÂP = QR̂
+// onde
+//     Â = A/max, max é o maior elemento em módulo de A
+//     P é uma matriz de permutação
+//     Q = Q₁…Qᵣ produto de refletores de Hausdorff
+//     R̂ = ⎡R₁₁ R₁₂⎤, R₁₁ (r×r) triangular superior não-singular
+//         ⎣ 0  0 ⎦
+//
+// e R̂ é armazenada sobre a parte triangular superior da matriz A.
+// Cada refletor de Hausdorff é da forma
+//     Qk = ⎡Iₖ-₁     0   ⎤, uₖ (n-k)
+//          ⎣ 0  Iₖ-γₖuₖuₖᵀ⎦
+// Os γₖ são armazenados num vetor separado, enquanto que os uₖ são
+// gravados na parte triangular inferior de A (o primeiro elemento
+// de uₖ é sempre 1, então não precisa ser armazedado).
+//
+// Além disso, retorna
+//     - max, o elemento máximo de A usado para reescalar e evitar overflow
+//     - o posto de A
+//     - o vetor p de permutações das colunas de A
 QR qr(Matriz A) {
     int    n, m;
     double **M;
