@@ -1,7 +1,7 @@
 using Polynomials
 
 function main()
-    n = 100
+    n = 4
     m = 2
 
     # Gera um polinômio de grau m com coeficientes aleatórios c
@@ -39,17 +39,17 @@ function main()
     close(file)
 
     file = open("solução1.dat", "w");
-    Q, R, p = qr(A, Val{true})
-    ĉ = Q'y
-    
-    @printf file "Q\n"
-    writedlm(file, Q)
+    F = qrfact(A, Val{true})
+    ĉ = F[:Q]'y
+
+    @printf file "F\n"
+    writedlm(file, F.factors)
 
     @printf file "\nR\n"
-    writedlm(file, R)
+    writedlm(file, F[:R])
 
     @printf file "\np\n"
-    writedlm(file, p)
+    writedlm(file, F[:p])
 
     @printf file "\nc̄\n"
     writedlm(file, c̄)
