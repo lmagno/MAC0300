@@ -6,6 +6,7 @@
 typedef struct qr_t {
     int    *p;
     int    posto;
+    double max;
     double *gammas;
 } QR;
 #endif

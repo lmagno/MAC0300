@@ -141,6 +141,7 @@ QR qr(Matriz A) {
 
     q.posto  = k;
     q.p      = p;
+    q.max    = max;
     q.gammas = gammas;
 
     free(norms);
