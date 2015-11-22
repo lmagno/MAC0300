@@ -1,16 +1,16 @@
 using Polynomials
 
 function main()
-    n = 20
-    m = 4
+    n = parse(Int, ARGS[1])
+    m = parse(Int, ARGS[2])
 
     # Gera um polinômio de grau m com coeficientes aleatórios c
-    c = 10.^randn(m)
+    c = 100*randn(m)
     p = Poly(c)
 
     # Gera um conjunto de pontos (x, y), onde y ≈ p(x)
-    x = 10.^randn(n)
-    y = polyval(p, x) + randn(n)
+    x = 100*randn(n)
+    y = polyval(p, x).*(1 + 0.1*randn(n))
 
     # Cria a matriz de Vandermonde do sistema
     A = Array(Float64, (n, m))
@@ -19,46 +19,41 @@ function main()
         A[:, j] = A[:, j-1] .* x
     end
 
-    # c̄ é a solução do sistema por mínimos quadrados e deve ser uma
-    # aproximação de c
-    c̄ = A\y
+    dados = open("dados1.dat", "w")
 
-    file = open("sistema1.dat", "w")
+    @printf dados "%d %d\n" n m
+    for i = 1:n
+        @printf dados "%.17e %.17e\n" x[i] y[i]
+    end
 
-    @printf file "%d %d\n" n m
+    close(dados)
+
+    sistema = open("sistema1.dat", "w")
+
+    @printf sistema "%d %d\n" n m
     for i = 1:n
         for j = 1:m
-            @printf file "%.17e\n" A[i, j]
+            @printf sistema "%.17e\n" A[i, j]
         end
     end
 
     for i = 1:n
-        @printf file "%.17e\n" y[i]
+        @printf sistema "%.17e\n" y[i]
     end
 
-    close(file)
+    close(sistema)
 
-    file = open("solução1.dat", "w");
-    F = qrfact(A, Val{true})
-    ĉ = F[:Q]'y
+    solução = open("solução1.dat", "w");
 
-    @printf file "F\n"
-    writedlm(file, F.factors)
+    # c̄ é a solução do sistema por mínimos quadrados e deve ser uma
+    # aproximação de c
+    c̄ = A\y
 
-    @printf file "\nR\n"
-    writedlm(file, F[:R])
+    for i = 1:m
+        @printf solução "%.17e\n" c̄[i]
+    end
 
-    @printf file "\np\n"
-    writedlm(file, F[:p])
-
-    @printf file "\nc̄\n"
-    writedlm(file, c̄)
-
-    @printf file "\nĉ\n"
-    writedlm(file, ĉ)
-
-
-    close(file)
+    close(solução)
 end
 
 main()

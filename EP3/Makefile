@@ -3,7 +3,7 @@ SOURCE = $(NAME).c
 OUTPUT = $(NAME)
 
 LIBDIR = ./Bibliotecas/
-LIBS = Entrada Utils QR MMQ Saída
+LIBS = Entrada Utils QR MMQ Saída Plot
 LIBFILES   = $(addprefix $(LIBDIR), $(LIBS:=.c))
 LIBHEADERS = $(addprefix $(LIBDIR), $(LIBS:=.h))
 

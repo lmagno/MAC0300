@@ -7,6 +7,7 @@
 #include "Bibliotecas/QR.h"
 #include "Bibliotecas/MMQ.h"
 #include "Bibliotecas/Saída.h"
+#include "Bibliotecas/Plot.h"
 
 int main(int argc, char** argv) {
     Sistema S;
@@ -23,6 +24,7 @@ int main(int argc, char** argv) {
         i++;
 
     input = argv[i];
+
     // Carrega o sistema (A e b) do arquivo de entrada
     S = loaddata(input);
     A = S.A;
@@ -36,7 +38,8 @@ int main(int argc, char** argv) {
 
     // Salva o resultado para um arquivo de saída
     save(x, A.m, input);
-
+    plot(input, x);
+    
     // Libera as memórias alocadas
     free(x);
     sysfree(S);
