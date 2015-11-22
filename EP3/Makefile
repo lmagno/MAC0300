@@ -1,6 +1,6 @@
 NAME = EP3
 SOURCE = $(NAME).c
-OUTPUT = $(NAME).out
+OUTPUT = $(NAME)
 
 LIBDIR = ./Bibliotecas/
 LIBS = Entrada Utils QR MMQ Saída

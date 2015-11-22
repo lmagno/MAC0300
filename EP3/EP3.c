@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     // Escolhe o primeiro argumento como nome do arquivo
     // de entrada
     i = 0;
-    while(!strcmp("EP3.out", argv[i]))
+    while(!strcmp("EP3", argv[i]))
         i++;
 
     // Carrega o sistema (A e b) do arquivo de entrada
