@@ -40,6 +40,8 @@ function main()
 
     file = open("solução1.dat", "w");
     Q, R, p = qr(A, Val{true})
+    ĉ = Q'y
+    
     @printf file "Q\n"
     writedlm(file, Q)
 
@@ -51,6 +53,10 @@ function main()
 
     @printf file "\nc̄\n"
     writedlm(file, c̄)
+
+    @printf file "\nĉ\n"
+    writedlm(file, ĉ)
+
 
     close(file)
 end
