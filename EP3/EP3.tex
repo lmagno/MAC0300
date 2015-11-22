@@ -22,23 +22,40 @@
 
     \section*{Introdução}
     Este EP consiste em se resolver um sistema linear sobredeterminado na forma
-    $$ \mathbf{Ax} = \mathbf{b} $$
+    $$ Ax = b $$
     onde
     \begin{align*}
-        \mathbf{A} & \in \mathbb{R}^{n\times m}\\
-        \mathbf{x} & \in \mathbb{R}^{m} \\
-        \mathbf{b} & \in \mathbb{R}^{n}
+        A & \in \mathbb{R}^{n\times m}\\
+        x & \in \mathbb{R}^{m} \\
+        b & \in \mathbb{R}^{n}
     \end{align*}
 
     a fim de minimizar a norma do resíduo, ou, equivalentemente, sua norma ao quadrado, dada por
     \begin{align*}
-        \| \mathbf{r} \|_2^2 &= \| \mathbf{b} - \mathbf{Ax} \|_2^2 \\
-                             &= \sum_{i = 1}^n (\mathbf{b}_i - \mathbf{(Ax)}_i)^2 \\
+        \| r \|_2^2 &= \| b - Ax \|_2^2 \\
+                             &= \sum_{i = 1}^n (b_i - (Ax)_i)^2 \\
                              &= \sum_{i = 1}^n r_i^2
     \end{align*}
 
-    Ou seja, o problema se resume em encontrar $\mathbf{x}$ que minimize os $r_i^2$, o que dá o nome ao Método dos Mínimos Quadrados.
+    Ou seja, o problema se resume em encontrar $x$ que minimize os $r_i^2$, o que dá o nome ao Método dos Mínimos Quadrados.
 
     \section*{Matrizes Ortogonais}
+    Para tal, vale a pena o estudo de matrizes ortogonais, que são definidas como qualquer matriz $Q$ tal que
+    $$ Q^TQ = I$$
+    ($Q^T$ também é ortogonal).
 
+    E portanto, como se verifica facilmente para qualquer vetor ou matriz $x$
+    $$ \| Qx \|_2 = \| x \|_2$$
+
+    Ou seja, podemos utilizar matrizes ortogonais para transformar o sistema na forma
+    $$ Q^TAx = Q^Tb$$
+
+    cujo resíduo
+    $$ r = Q^Tb - Q^TAx$$
+
+    tem a mesma norma que o sistema original
+    $$ \|r\|_2 = \|Q^T(b - Ax)\|_2 = \|b - Ax\|_2$$
+
+    \newpage
+    \section*{Refletores de Householder}
 \end{document}

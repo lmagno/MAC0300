@@ -9,12 +9,12 @@
 // onde
 //     Â = A/max, max é o maior elemento em módulo de A
 //     P é uma matriz de permutação
-//     Q = Q₁…Qᵣ produto de refletores de Hausdorff
+//     Q = Q₁…Qᵣ produto de refletores de Householder
 //     R̂ = ⎡R₁₁ R₁₂⎤, R₁₁ (r×r) triangular superior não-singular
 //         ⎣ 0  0 ⎦
 //
 // e R̂ é armazenada sobre a parte triangular superior da matriz A.
-// Cada refletor de Hausdorff é da forma
+// Cada refletor de Householder é da forma
 //     Qk = ⎡Iₖ-₁     0   ⎤, uₖ (n-k)
 //          ⎣ 0  Iₖ-γₖuₖuₖᵀ⎦
 // Os γₖ são armazenados num vetor separado, enquanto que os uₖ são
