@@ -5,9 +5,9 @@
 // Carrega a matriz A (n×m) e o vetor b (n) de um sistema Ax = b descrito
 // no arquivo 'filename' e os retorna através dos ponteiros passados como
 // argumentos.
-Sistema load(char *filename) {
-    int    l, c;     // Número de linhas e colunas
-    double **M, *d;  // Matriz e vetor
+Sistema loadsys(char *filename) {
+    int    n, m;     // Número de linhas e colunas
+    double **M, *b;  // Matriz e vetor
     int    i, j;
     double v;
     FILE   *f;
@@ -22,34 +22,38 @@ Sistema load(char *filename) {
     }
 
     // Lê as dimensões do sistema
-    fscanf(f, "%d %d", &l, &c);
+    fscanf(f, "%d %d", &n, &m);
 
     // Aloca a matriz e o vetor
-    d = malloc(l*sizeof(double));
-    A = matalloc(l, c);
+    b = malloc(n*sizeof(double));
+    A = matalloc(n, m);
     M = A.M;
 
     // Lê os elementos da matriz
-    for (i = 0; i < l; i++) {
-        for (j = 0; j < c; j++) {
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             fscanf(f, "%lf", &v);
             M[i][j] = v;
         }
     }
 
     // Lê os elementos do vetor
-    for (i = 0; i < l; i++) {
+    for (i = 0; i < n; i++) {
         fscanf(f, "%lf", &v);
-        d[i] = v;
+        b[i] = v;
     }
 
     S.A = A;
-    S.b = d;
+    S.b = b;
 
     fclose(f);
     return S;
 }
 
+Sistema loaddata(char *filename) {
+
+
+}
 void sysfree(Sistema S) {
     matfree(S.A);
     free(S.b);

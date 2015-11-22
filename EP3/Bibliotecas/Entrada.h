@@ -9,5 +9,5 @@ typedef struct sistema_t {
 
 #endif
 
-Sistema load(char *filename);
+Sistema loadsys(char *filename);
 void sysfree(Sistema S);
