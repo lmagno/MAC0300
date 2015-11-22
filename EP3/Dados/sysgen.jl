@@ -1,8 +1,8 @@
 using Polynomials
 
 function main()
-    n = 4
-    m = 2
+    n = 20
+    m = 4
 
     # Gera um polinômio de grau m com coeficientes aleatórios c
     c = 10.^randn(m)
