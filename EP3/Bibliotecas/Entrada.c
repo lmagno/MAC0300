@@ -36,7 +36,7 @@ Sistema load(char *filename) {
     }
 
     // Lê os elementos do vetor
-    for (k = 0; k < c; k++) {
+    for (k = 0; k < l; k++) {
         fscanf(f, "%d %lf", &i, &v);
         d[i] = v;
     }
