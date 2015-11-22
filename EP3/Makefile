@@ -3,7 +3,7 @@ SOURCE = $(NAME).c
 OUTPUT = $(NAME).out
 
 LIBDIR = ./Bibliotecas/
-LIBS = Entrada Utils QR
+LIBS = Entrada Utils QR MMQ
 LIBFILES   = $(addprefix $(LIBDIR), $(LIBS:=.c))
 LIBHEADERS = $(addprefix $(LIBDIR), $(LIBS:=.h))
 

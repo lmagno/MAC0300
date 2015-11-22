@@ -4,27 +4,25 @@
 #include "Bibliotecas/Entrada.h"
 #include "Bibliotecas/Utils.h"
 #include "Bibliotecas/QR.h"
+#include "Bibliotecas/MMQ.h"
 
 int main(int argc, char** argv) {
-    double *b;
-    double *gammas;
-    int    *p, posto;
     Sistema S;
     Matriz  A;
     QR      q;
+    double *b;
+    int i;
 
-    S = load("Dados/a1.dat");
+    S = load("Dados/sistema1.dat");
     A = S.A;
     b = S.b;
 
-    p      = malloc(A.m*sizeof(int));
-    gammas = malloc(A.m*sizeof(double));
+    printf("\nb\n");
+    for (i = 0; i < A.n; i++)
+        printf("%d %f\n", i, b[i]);
 
     q = qr(A);
-    posto = q.posto;
-    printf("%f\n", A.M[0][0]);
-    printf("posto = %d\n", posto);
-
+    mmq(S, q);
 
     sysfree(S);
     qrfree(q);
