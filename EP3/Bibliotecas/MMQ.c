@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "MMQ.h"
 
-void mmq(Sistema S, QR q) {
+double* mmq(Sistema S, QR q) {
     Matriz A;
     int n, m;
     double **M, *b, *x;
@@ -24,17 +24,17 @@ void mmq(Sistema S, QR q) {
 
     x = calloc(m, sizeof(double));
 
+    // Sistema
+    //         APP⁻¹x = b
+    //         QRP⁻¹x = b
+    // Solução
+    //          c = Qᵀb
+    //         Rx̂ = ĉ
+    //          x = Px̂
 
-    // Sistema APP⁻¹x = b
-    // RP⁻¹x = Qᵀb
     // Reescala o vetor b para manter o sistema equivalente
-    // for (i = 0; i < n; i++)
-    //     b[i] /= max;
-
-    for (i = 0; i < n; i++) {
-        for (j = i; j < m; j++)
-            M[i][j] *= max;
-    }
+    for (i = 0; i < n; i++)
+        b[i] /= max;
 
     // b ← Qᵣ…Q₁b
     for (k = 0; k < r; k++) {
@@ -53,10 +53,6 @@ void mmq(Sistema S, QR q) {
 
     }
 
-    printf("\nb\n");
-    for (i = 0; i < n; i++)
-        printf("%d %f\n", i, b[i]);
-
     // Backsubstitution
     // Rx̂ = ĉ
     for (i = r-1; i >= 0; i--) {
@@ -67,13 +63,7 @@ void mmq(Sistema S, QR q) {
 
         x[i] = v/M[i][i];
     }
-    printf("\nM\n");
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < m; j++) {
-            printf("%f\t", M[i][j]);
-        }
-        printf("\n");
-    }
+
     // x = Px̂
     for (i = 0; i < r; i++) {
         k = p[i];
@@ -83,9 +73,5 @@ void mmq(Sistema S, QR q) {
         x[k] = v;
     }
 
-    printf("\nx\n");
-    for (i = 0; i < m; i++)
-        printf("%d %f\n", i, x[i]);
-
-    free(x);
+    return x;
 }

@@ -2,4 +2,4 @@
 #include "Entrada.h"
 #include "QR.h"
 
-void mmq(Sistema S, QR q);
+double* mmq(Sistema S, QR q);
