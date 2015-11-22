@@ -11,10 +11,14 @@ CC     = gcc
 CFLAGS = -Wall -g
 LFLAGS = -lm
 
-.PHONY: all clean
-
+.PHONY: all clean tex
+tex: $(NAME).tex
+	pdflatex $(NAME).tex
+	
 $(OUTPUT): $(LIBFILES) $(LIBHEADERS) $(SOURCE)
 	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) $(LFLAGS) -o $(OUTPUT)
+
+
 
 clean:
 	rm -f $(OUTPUT) Dados/*.out Dados/*.pdf

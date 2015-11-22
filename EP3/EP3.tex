@@ -1,0 +1,44 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[brazilian]{babel}
+\usepackage[left=2.5cm,right=2.5cm,top=2.0cm,bottom=1.5cm]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\date{}
+\author{Lucas Magno \\ 7994983}
+\title{Exercício Programa 3 \\ Matrizes Ortogonais e o Problema de Quadrados Mínimos}
+
+\begin{document}
+    \maketitle
+
+    \section*{Introdução}
+    Este EP consiste em se resolver um sistema linear sobredeterminado na forma
+    $$ \mathbf{Ax} = \mathbf{b} $$
+    onde
+    \begin{align*}
+        \mathbf{A} & \in \mathbb{R}^{n\times m}\\
+        \mathbf{x} & \in \mathbb{R}^{m} \\
+        \mathbf{b} & \in \mathbb{R}^{n}
+    \end{align*}
+
+    a fim de minimizar a norma do resíduo, ou, equivalentemente, sua norma ao quadrado, dada por
+    \begin{align*}
+        \| \mathbf{r} \|_2^2 &= \| \mathbf{b} - \mathbf{Ax} \|_2^2 \\
+                             &= \sum_{i = 1}^n (\mathbf{b}_i - \mathbf{(Ax)}_i)^2 \\
+                             &= \sum_{i = 1}^n r_i^2
+    \end{align*}
+
+    Ou seja, o problema se resume em encontrar $\mathbf{x}$ que minimize os $r_i^2$, o que dá o nome ao Método dos Mínimos Quadrados.
+
+    \section*{Matrizes Ortogonais}
+
+\end{document}
