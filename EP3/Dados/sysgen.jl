@@ -28,12 +28,12 @@ function main()
     @printf file "%d %d\n" n m
     for i = 1:n
         for j = 1:m
-            @printf file "%d %d %.17e\n" i-1 j-1 A[i, j]
+            @printf file "%.17e\n" A[i, j]
         end
     end
 
     for i = 1:n
-        @printf file "%d %.17e\n" i-1 y[i]
+        @printf file "%.17e\n" y[i]
     end
 
     close(file)

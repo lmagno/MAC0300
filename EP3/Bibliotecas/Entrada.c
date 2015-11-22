@@ -8,7 +8,7 @@
 Sistema load(char *filename) {
     int    l, c;     // Número de linhas e colunas
     double **M, *d;  // Matriz e vetor
-    int    i, j, k;
+    int    i, j;
     double v;
     FILE   *f;
     Sistema S;
@@ -30,14 +30,16 @@ Sistema load(char *filename) {
     M = A.M;
 
     // Lê os elementos da matriz
-    for (k = 0; k < l*c; k++) {
-        fscanf(f, "%d %d %lf", &i, &j, &v);
-        M[i][j] = v;
+    for (i = 0; i < l; i++) {
+        for (j = 0; j < c; j++) {
+            fscanf(f, "%lf", &v);
+            M[i][j] = v;
+        }
     }
 
     // Lê os elementos do vetor
-    for (k = 0; k < l; k++) {
-        fscanf(f, "%d %lf", &i, &v);
+    for (i = 0; i < l; i++) {
+        fscanf(f, "%lf", &v);
         d[i] = v;
     }
 
