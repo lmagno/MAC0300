@@ -1,1 +1,1 @@
-void save(double *x, int m);
+void save(double *x, int m, char *input);

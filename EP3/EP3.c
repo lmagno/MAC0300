@@ -13,6 +13,7 @@ int main(int argc, char** argv) {
     Matriz  A;
     QR      q;
     double *x;
+    char   *input;
     int i;
 
     // Escolhe o primeiro argumento como nome do arquivo
@@ -21,8 +22,9 @@ int main(int argc, char** argv) {
     while(!strcmp("EP3", argv[i]))
         i++;
 
+    input = argv[i];
     // Carrega o sistema (A e b) do arquivo de entrada
-    S = load(argv[i]);
+    S = load(input);
     A = S.A;
 
     // Decompõe A por QR
@@ -33,7 +35,7 @@ int main(int argc, char** argv) {
     x = mmq(S, q);
 
     // Salva o resultado para um arquivo de saída
-    save(x, A.m);
+    save(x, A.m, input);
 
     // Libera as memórias alocadas
     free(x);
