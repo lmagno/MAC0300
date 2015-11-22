@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
     input = argv[i];
     // Carrega o sistema (A e b) do arquivo de entrada
-    S = load(input);
+    S = loaddata(input);
     A = S.A;
 
     // Decompõe A por QR
