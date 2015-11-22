@@ -24,15 +24,17 @@ void mmq(Sistema S, QR q) {
 
     x = calloc(m, sizeof(double));
 
-    printf("\nb\n");
-    for (i = 0; i < n; i++)
-        printf("%d %f\n", i, b[i]);
 
     // Sistema APP⁻¹x = b
     // RP⁻¹x = Qᵀb
     // Reescala o vetor b para manter o sistema equivalente
-    for (i = 0; i < n; i++)
-        b[i] /= max;
+    // for (i = 0; i < n; i++)
+    //     b[i] /= max;
+
+    for (i = 0; i < n; i++) {
+        for (j = i; j < m; j++)
+            M[i][j] *= max;
+    }
 
     // b ← Qᵣ…Q₁b
     for (k = 0; k < r; k++) {
@@ -45,11 +47,15 @@ void mmq(Sistema S, QR q) {
 
         // b ← b - γₖuₖv
         gamma = gammas[k];
-        for (i = k; i < n; i++)
+        b[k] -= gamma*v;
+        for (i = k+1; i < n; i++)
             b[i] -= gamma*M[i][k]*v;
 
     }
 
+    printf("\nb\n");
+    for (i = 0; i < n; i++)
+        printf("%d %f\n", i, b[i]);
 
     // Backsubstitution
     // Rx̂ = ĉ
@@ -61,10 +67,10 @@ void mmq(Sistema S, QR q) {
 
         x[i] = v/M[i][i];
     }
-    printf("\nR\n");
-    for (i = 0; i < r; i++) {
-        for (j = 0; j < r; j++) {
-            printf("%f\t", max*M[i][j]);
+    printf("\nM\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            printf("%f\t", M[i][j]);
         }
         printf("\n");
     }
