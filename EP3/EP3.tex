@@ -248,7 +248,7 @@
                 $$ (t_i, b_i),\quad i = 1\dots n$$
             ajusta um polinômio de grau $m-1$ a esses pontos por mínimos quadrados.
 
-            Ou seja, monta a matriz de Vandermonde do sistema
+            Ou seja, monta a matriz de Vandermonde\footnote{\url{https://en.wikipedia.org/wiki/Vandermonde_matrix}} do sistema
             $$ A =
             \begin{bmatrix}
                 1 & t_1 & t_1^2 & \dots & t_1^{m-1} \\
@@ -308,7 +308,7 @@
             poupando grande parte das operações.
 
     \section*{Exemplo}
-        Para ilustrar o funcionamento do programa, foi escolhido um conjunto de dados colhidos durante um experimento de física experimental, que buscava encontra a razão carga-massa, ou carga reduzida, do elétron, através do Método da Hélice de Busch.
+        Para ilustrar o funcionamento do programa, foi escolhido um conjunto de dados colhidos durante um experimento de física experimental, que buscava encontra a razão carga-massa, ou carga reduzida, do elétron, através do Método da Hélice de Busch.\cite{busch}
 
         Esse método consiste inserir um feixe de elétrons gerado num tudo de raios catódicos com uma dada tensão aceleradora num campo magnético por sua vez gerado por um solenoide com uma dada corrente.
 
@@ -324,7 +324,7 @@
         Utilizando esses dados, obtemos com o programa atual o ajuste
         \begin{figure}[h]
             \caption{Tensão em função do quadrado da corrente para os quais as trajetórias dos feixes de elétron convergem}
-            \includegraphics[width=\textwidth]{Dados/dados2.pdf}
+            \includegraphics[width=\textwidth]{Dados/cargareduzida.pdf}
         \end{figure}
 
         em que $b$ neste caso é a tensão, em volts ($V$), $t$ é o quadrado da corrente, em ampères quadrados ($A^2$) e o polinômio ajustado foi
@@ -337,9 +337,26 @@
         Levando em conta a constante $\alpha$ (que não é de interesse aqui), podemos obter
         $$ \frac{e}{m} \approx 1.46\times 10^{11} \frac{C}{Kg} $$
 
-        que é próximo do valor correto medido
+        que é próximo do valor correto medido\cite{nist}
         $$ \frac{e}{m} = 1.76\times 10^{11} \frac{C}{Kg} $$
 
         e está dentro do intervalo de confiança quando se utilizam as incertezas.\footnote{Que não foram consideradas aqui por limitação do algoritmo, mas foi mantido o número de algarismos significativos do experimento original.}
     \section*{Conclusão}
+        A decomposição QR, embora mais custosa que Cholesky ou LU, permite o tratamente de uma classe muito maior de matrizes, eliminando até a exigência da não-singularidade.
+        Mesmo assim é bastante eficaz ainda, devido ao seu uso inteligente de diversos resultados da matemática.
+
+        Sua aplicação mais clara é o Problema de Mínimos Quadrados, onde sistemas sobredeterminados ocorrem com grande frequência, como ilustrado no exemplo.
+
+        Assim, esse método nos permite resolver esse tipo de sistema evitando problemas comuns, como o mal condicionamento do sistema quando se utilizam as equações normais, por exemplo.
+
+
+    \begin{thebibliography}{9}
+        \bibitem{nist}
+            CODATA Value: electron charge to mass quotient
+            \url{http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1806-11172006000400005}
+            The NIST reference on Constants, Units and Uncertainty
+
+        \bibitem{busch}
+            CAVALCANTE, Marisa Almeida  and  DIAS, Eliane Fernanda. Método da hélice de Busch e a determinação da componente horizontal do campo magnético terrestre. Rev. Bras. Ensino Fís. [online]. 2006, vol.28, n.4 [cited  2015-11-22], pp. 435-440 . Available from: \url{http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1806-11172006000400005&lng=en&nrm=iso}. ISSN 1806-9126.  http://dx.doi.org/10.1590/S0102-47442006000400005.
+    \end{thebibliography}
 \end{document}
