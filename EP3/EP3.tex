@@ -282,6 +282,64 @@
         Além disso, no caso de ser um conjunto de dados com um polinômio ajustado, é salvo em um arquivo \texttt{pdf} o plot dos dados sobrepostos ao polinômio encontrado.
 
     \section*{Detalhes de implementação}
-    \section*{Exemplos}
+        Vale a pena mencionar alguns detalhes que influenciam na eficiência do programa que foram implementados.
+
+        \subsection*{Normalização}
+            Sempre ao se realizar a soma de pontos flutuantes arbitrários há o perigo de overflow, contaminando o restante da computação. Esse risco é ainda maior no cálculo de normas, que é parte central do algoritmo aqui implementado.
+
+            Portanto, para evitar isso, pode-se reescalar os elementos de um vetor de forma que o máximo deles tenha valor 1, calcular a norma, e reescalar de volta, o que elimina a chance de overflow, já que todos os elementos têm valor baixo.
+
+            No entanto, isso teria que ser feito a cada norma calculada e seria necessário um vetor auxiliar para guardar cada fator de escala. Então se escolheu reescalar a matriz $A$ inteira por seu maior elemento, evitando-se o overflow em todas as operações seguintes e no final simplesmente se reescala o vetor $b$ também para se obter um sistema equivalente e então resolvê-lo, sendo necessário o armazenamento de um único escalar.
+
+        \subsection*{Normas}
+            Novamente, o cálculo de normas é parte central do algoritmo aqui, então uma preocupação com sua eficiência é necessária.
+
+            A cada passo, deve ser escolhida a subcoluna de maior norma, o que implicaria no cálculo das normas de todas subcolunas, que claramente é muito custoso.
+
+            Entretanto, calculando-se as normas das colunas completas e guardando seus quadrados num vetor auxiliar, podemos obter a norma de qualquer subcoluna simplesmente removendo a contribuição dos elementos superiores.
+
+            Ou seja, como a norma de uma dada coluna $y$ é
+            $$ \tau_1^2 = y_1^2 + y_2^2 + \dots + y_n^2 $$
+            a norma da primeira subcoluna (sem o elemento $y_1$) é dada por
+            \begin{align*}
+                \tau_2^2 &= y_2^2 + \dots + y_n^2 \\
+                         &= \tau_1^2 - y_1^2
+            \end{align*}
+            poupando grande parte das operações.
+
+    \section*{Exemplo}
+        Para ilustrar o funcionamento do programa, foi escolhido um conjunto de dados colhidos durante um experimento de física experimental, que buscava encontra a razão carga-massa, ou carga reduzida, do elétron, através do Método da Hélice de Busch.
+
+        Esse método consiste inserir um feixe de elétrons gerado num tudo de raios catódicos com uma dada tensão aceleradora num campo magnético por sua vez gerado por um solenoide com uma dada corrente.
+
+        Variando-se ambas tensão e corrente, pode-se alterar a posição em que os diversos elétrons atingem um certo anteparo a uma dada distância da origem do feixe.
+
+        No entanto, para certos valores de tensão e corrente, todas as trajetórias convergem num único ponto no anteparo e nesse caso vale a expressão
+
+        $$ V = \alpha \frac{e}{m}I^2 $$
+        em que $V$ é a tensão do tubo de raios catódicos, $I$ é a corrente no solenoide, $\alpha$ é uma costante composta por vários dados do experimento (a distância até o anteparo, por exemplo), $e$ é o valor absoluto carga do elétron e $m$ é sua massa.
+
+        Assim, foram registrados diversos valores de $V$ em e $I^2$ para os quais a expressão era válida e a eles ajustado um polinômio de primeiro grau, a fim de se encontrar a todo o coeficiente que contém a carga reduzida.
+
+        Utilizando esses dados, obtemos com o programa atual o ajuste
+        \begin{figure}[h]
+            \caption{Tensão em função do quadrado da corrente para os quais as trajetórias dos feixes de elétron convergem}
+            \includegraphics[width=\textwidth]{Dados/dados2.pdf}
+        \end{figure}
+
+        em que $b$ neste caso é a tensão, em volts ($V$), $t$ é o quadrado da corrente, em ampères quadrados ($A^2$) e o polinômio ajustado foi
+        $$ p(t) = x_1 + x_2t $$
+
+        \newpage
+        Para o coeficiente angular (termo que multiplica $t = I^2$) foi encontrado
+        $$ x_2 = \alpha \frac{e}{m} \approx 1.57\times 10^2 \frac{V}{A^2}$$
+
+        Levando em conta a constante $\alpha$ (que não é de interesse aqui), podemos obter
+        $$ \frac{e}{m} \approx 1.46\times 10^{11} \frac{C}{Kg} $$
+
+        que é próximo do valor correto medido
+        $$ \frac{e}{m} = 1.76\times 10^{11} \frac{C}{Kg} $$
+
+        e está dentro do intervalo de confiança quando se utilizam as incertezas.\footnote{Que não foram consideradas aqui por limitação do algoritmo, mas foi mantido o número de algarismos significativos do experimento original.}
     \section*{Conclusão}
 \end{document}

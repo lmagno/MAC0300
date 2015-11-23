@@ -12,12 +12,12 @@ CFLAGS = -Wall -g
 LFLAGS = -lm
 
 .PHONY: all clean tex
-tex: $(NAME).tex
-	pdflatex $(NAME).tex
-	
+
 $(OUTPUT): $(LIBFILES) $(LIBHEADERS) $(SOURCE)
 	$(CC) $(CFLAGS) $(LIBFILES) $(SOURCE) $(LFLAGS) -o $(OUTPUT)
 
+tex: $(NAME).tex
+	pdflatex $(NAME).tex
 
 
 clean:

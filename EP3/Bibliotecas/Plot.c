@@ -51,9 +51,9 @@ void plot(char *input, double *x) {
 
     fprintf(gnuplotPipe, "set xlabel 't'\n");
     fprintf(gnuplotPipe, "set ylabel 'b'\n");
-    fprintf(gnuplotPipe, "set term pdfcairo size 10, 5\n");
+    fprintf(gnuplotPipe, "set term pdfcairo size 8, 4\n");
     fprintf(gnuplotPipe, "set output '%s'\n", output);
-    fprintf(gnuplotPipe, "plot '-' t 'dados', %s t 'x'\n", poly);
+    fprintf(gnuplotPipe, "plot '-' t 'dados' pt 7 ps 0.3 lc 0, %s t 'x' lc 1\n", poly);
     for (i = 0; i < n; i++) {
         fprintf(gnuplotPipe, "%.17e %.17e\n", t[i], b[i]);
     }
